@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — Arabic–English Parallel Corpus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name" id="hd-name">Raṣāʾif</span>
+      <span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link active" id="nav-s">Search</a>
+      <a href="analysis.html" class="nav-link"         id="nav-a">Analysis</a>
+      <a href="about.html"    class="nav-link"         id="nav-b">About</a>
+      <a href="cite.html"     class="nav-link"         id="nav-c">Cite</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="corpus-banner" id="banner">
+  <div class="banner-inner">
+    <div class="banner-stat"><span class="banner-num" id="bn-texts">—</span><span class="banner-lbl" id="bn-texts-l">Texts</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-pairs">—</span><span class="banner-lbl" id="bn-pairs-l">Sentence Pairs</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-ar">—</span><span class="banner-lbl" id="bn-ar-l">Arabic Words</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-en">—</span><span class="banner-lbl" id="bn-en-l">English Words</span></div>
+  </div>
+</div>
+
+<div class="search-layout">
+  <aside class="sidebar">
+    <div class="sb-heading">
+      <span id="sb-lbl">Texts</span>
+      <div class="sb-btns">
+        <button class="btn-ghost" id="btn-all" onclick="selectAll(true)">Select all</button>
+        <button class="btn-ghost" id="btn-none" onclick="selectAll(false)">Clear all</button>
+      </div>
+    </div>
+    <div id="text-tree"><div style="font-size:12px;color:var(--ink-faint);padding:4px"><span class="spinner"></span><span id="tree-msg"> Loading…</span></div></div>
+  </aside>
+
+  <div class="main-area">
+    <div class="searchbar">
+      <div class="search-row">
+        <input type="text" id="q" autocomplete="off" oninput="doSearch()" placeholder="Search in English or Arabic…">
+        <select class="ctrl-sel" id="lang-sel" onchange="doSearch()">
+          <option value="both" id="opt-both">Both languages</option>
+          <option value="en"   id="opt-en">English only</option>
+          <option value="ar"   id="opt-ar">Arabic only</option>
+        </select>
+        <div class="btn-group" id="view-btns">
+          <button class="active" onclick="setView('parallel')" id="btn-parallel">Parallel table</button>
+          <button onclick="setView('conc')"                    id="btn-kwic">Concordance</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label" id="lbl-match">Match:</span>
+        <div class="btn-group" id="mode-btns">
+          <button class="active" onclick="setMode('any')"   id="btn-any">Any order</button>
+          <button onclick="setMode('exact')"                id="btn-exact">Exact phrase</button>
+          <button onclick="setMode('or')"                   id="btn-or">Any word</button>
+        </div>
+        <label class="morph-label">
+          <input type="checkbox" id="morpho" onchange="doSearch()" checked>
+          <span id="lbl-morph">Morphology</span>
+          <span class="morph-hint" id="morph-hint">(كاتب/كتبت = كتب · ran/shown = run/show)</span>
+        </label>
+        <span class="filter-label" id="lbl-excl">Exclude:</span>
+        <input type="text" id="excl" placeholder="word or phrase…" oninput="doSearch()">
+      </div>
+    </div>
+
+    <div class="stats-bar" id="stats-bar">Δ</div>
+    <div id="results"><div class="msg"><span class="spinner"></span><span id="init-msg"> Loading corpus files…</span></div></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">—</div>
+    <div id="modal-body"></div>
+    <button class="modal-close" id="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+let catalogue=null, view='parallel', mode='any', textMeta={};
+
+function toggleLang(){ setLang(LANG==='en'?'ar':'en'); applyI18n(); if(catalogue)renderTree(catalogue); doSearch(); }
+
+function applyI18n(){
+  const r=LANG==='ar';
+  document.getElementById('hd-name').textContent=t('site_name');
+  document.getElementById('hd-tag').textContent=t('site_subtitle');
+  document.getElementById('nav-s').textContent=t('nav_search');
+  document.getElementById('nav-a').textContent=t('nav_analysis');
+  document.getElementById('nav-b').textContent=t('nav_about');
+  document.getElementById('nav-c').textContent=t('nav_cite');
+  document.getElementById('lang-btn').textContent=t('toggle_lang');
+  document.getElementById('sb-lbl').textContent=t('texts_heading');
+  document.getElementById('btn-all').textContent=t('select_all');
+  document.getElementById('btn-none').textContent=t('clear_all');
+  document.getElementById('opt-both').textContent=t('lang_both');
+  document.getElementById('opt-en').textContent=t('lang_en');
+  document.getElementById('opt-ar').textContent=t('lang_ar');
+  document.getElementById('btn-parallel').textContent=t('output_parallel');
+  document.getElementById('btn-kwic').textContent=t('output_kwic');
+  document.getElementById('lbl-match').textContent=t('match_label')+':';
+  document.getElementById('btn-any').textContent=t('match_order');
+  document.getElementById('btn-exact').textContent=t('match_phrase');
+  document.getElementById('btn-or').textContent=t('match_any');
+  document.getElementById('lbl-morph').textContent=t('match_morph');
+  document.getElementById('morph-hint').textContent='('+t('morph_hint')+')';
+  document.getElementById('lbl-excl').textContent=t('exclude_label')+':';
+  document.getElementById('q').placeholder=t('search_placeholder');
+  document.getElementById('excl').placeholder=t('excl_placeholder');
+  document.getElementById('modal-close').textContent=t('modal_close');
+  document.getElementById('bn-texts-l').textContent=t('texts_heading');
+  document.getElementById('bn-pairs-l').textContent=t('stat_pairs');
+  document.getElementById('bn-ar-l').textContent=r?'جملةُ كلمِ العربية':'Arabic Words';
+  document.getElementById('bn-en-l').textContent=r?'جملةُ كلمِ الإنجليزية':'English Words';
+  document.getElementById('tree-msg').textContent=' '+t('loading');
+  document.getElementById('init-msg').textContent=' '+t('loading');
+}
+
+async function init(){
+  setLang(LANG); applyI18n();
+  const cat=await RasaifEngine.loadCatalogue();
+  catalogue=cat;
+  const texts=RasaifEngine.allTexts(cat);
+  for(const tm of texts) textMeta[tm.id]=tm;
+  renderTree(cat);
+  // Banner counts
+  document.getElementById('bn-texts').textContent=texts.length;
+  let pairs=0,tokAr=0,tokEn=0;
+  for(const tm of texts){
+    const ps=await RasaifEngine.loadPair(tm);
+    pairs+=ps.length;
+    for(const p of ps){
+      tokAr+=p.ar.split(/\s+/).filter(Boolean).length;
+      tokEn+=p.en.split(/\s+/).filter(Boolean).length;
+    }
+  }
+  document.getElementById('bn-pairs').textContent=pairs.toLocaleString();
+  document.getElementById('bn-ar').textContent=tokAr.toLocaleString();
+  document.getElementById('bn-en').textContent=tokEn.toLocaleString();
+  document.getElementById('stats-bar').textContent=t('ready_msg');
+}
+
+function renderTree(cat){
+  const tree=document.getElementById('text-tree');
+  tree.innerHTML='';
+  for(const category of cat.categories){
+    const grp=document.createElement('div');
+    grp.className='cat-group';
+    const hdr=document.createElement('div');
+    hdr.className='cat-header';
+    const catLabel=LANG==='ar'?category.ar:category.en;
+    hdr.innerHTML=`<span class="cat-arrow">▶</span><span class="cat-label">${catLabel}</span><button class="cat-all-btn" onclick="catAll('${category.id}',event)">${t('all_btn')}</button>`;
+    hdr.onclick=e=>{ if(e.target.classList.contains('cat-all-btn'))return; hdr.classList.toggle('open'); body.style.display=hdr.classList.contains('open')?'block':'none'; };
+    const body=document.createElement('div');
+    body.className='cat-body';
+    const allTextsInCat=[];
+    if(category.subcategories){
+      for(const sub of category.subcategories){
+        for(const txt of(sub.texts||[])){
+          allTextsInCat.push(txt);
+          body.appendChild(makeTextItem(txt));
+        }
+      }
+    } else {
+      for(const txt of(category.texts||[])){
+        allTextsInCat.push(txt);
+        body.appendChild(makeTextItem(txt));
+      }
+    }
+    grp.dataset.catId=category.id;
+    grp.dataset.textIds=allTextsInCat.map(t=>t.id).join(',');
+    grp.appendChild(hdr);
+    grp.appendChild(body);
+    tree.appendChild(grp);
+    // Open first category by default
+    if(cat.categories.indexOf(category)===0){ hdr.classList.add('open'); body.style.display='block'; }
+  }
+}
+
+function makeTextItem(txt){
+  const item=document.createElement('div');
+  item.className='text-item';
+  const title=LANG==='ar'?txt.title_ar:txt.title_en;
+  const author=LANG==='ar'?txt.author_ar:txt.author_en;
+  item.innerHTML=`
+    <input type="checkbox" id="cb-${txt.id}" value="${txt.id}" checked onchange="doSearch()">
+    <div class="text-item-text">
+      <div class="text-item-title">${RasaifEngine.esc(title)}</div>
+      <div class="text-item-author">${RasaifEngine.esc(author)}</div>
+    </div>
+    <button class="text-info-btn" title="${t('info_tooltip')}" onclick="showInfo('${txt.id}',event)">ⓘ</button>`;
+  return item;
+}
+
+function catAll(catId,e){ e.stopPropagation(); const grp=document.querySelector(`[data-cat-id="${catId}"]`); if(!grp)return; grp.dataset.textIds.split(',').filter(Boolean).forEach(id=>{ const cb=document.getElementById('cb-'+id); if(cb)cb.checked=true; }); doSearch(); }
+function selectAll(v){ document.querySelectorAll('.text-item input[type=checkbox]').forEach(cb=>cb.checked=v); doSearch(); }
+function getSelected(){ const s=new Set(); document.querySelectorAll('.text-item input[type=checkbox]:checked').forEach(cb=>s.add(cb.value)); return s; }
+
+function setView(v){ view=v; document.querySelectorAll('#view-btns button').forEach((b,i)=>b.classList.toggle('active',(i===0&&v==='parallel')||(i===1&&v==='conc'))); doSearch(); }
+function setMode(m){ mode=m; document.querySelectorAll('#mode-btns button').forEach((b,i)=>b.classList.toggle('active',['any','exact','or'][i]===m)); doSearch(); }
+
+let searchTimer=null;
+function doSearch(){
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>_doSearch(),120);
+}
+
+async function _doSearch(){
+  const q=(document.getElementById('q').value||'').trim();
+  const excl=document.getElementById('excl').value||'';
+  const lang=document.getElementById('lang-sel').value;
+  const useMorpho=document.getElementById('morpho').checked;
+  const sel=getSelected();
+  if(!sel.size){ document.getElementById('stats-bar').textContent=t('no_texts'); document.getElementById('results').innerHTML=`<div class="msg">${t('no_texts')}</div>`; return; }
+  document.getElementById('results').innerHTML=`<div class="msg"><span class="spinner"></span> ${t('loading')}</div>`;
+  const hits=await RasaifEngine.search({query:q,lang,mode,useMorpho,exclude:excl,textIds:sel});
+  const maxScore=hits.length?Math.max(hits[0].score,0.01):0.01;
+  // Stats bar
+  const morphoOn=useMorpho;
+  let sb=[`${hits.length} ${LANG==='ar'?'من':'of'} — ${t('results_of',hits.length,hits.length)}`];
+  if(q) sb=[t('results_of',hits.length,'?'), `«${q}» (${mode}${morphoOn?', '+t('match_morph'):''})`];
+  if(q&&hits.length) sb.push(t('ranked'));
+  document.getElementById('stats-bar').textContent=sb.join('  ·  ');
+  if(!hits.length){ document.getElementById('results').innerHTML=`<div class="msg">${t('no_results')}<br><small>${t('no_results_hint')}</small></div>`; return; }
+  const el=document.getElementById('results');
+  if(view==='parallel') el.innerHTML=renderParallel(hits,lang,maxScore,q);
+  else { const lines=RasaifEngine.makeConcordance(hits,q,lang); el.innerHTML=renderKWIC(lines); }
+}
+
+function renderParallel(hits,lang,maxScore,q){
+  const showAr=lang!=='en', showEn=lang!=='ar';
+  let h=`<table class="ptable"><thead><tr>
+    <th>#</th><th title="${LANG==='ar'?'الأولى':'Relevance'}">${t('col_rel')}</th>
+    <th>${t('col_source')}</th>
+    ${showEn?`<th>${t('col_en')}</th>`:''}
+    <th class="td-dot"></th>
+    ${showAr?`<th class="th-ar">${t('col_ar')}</th>`:''}
+  </tr></thead><tbody>`;
+  for(let i=0;i<hits.length;i++){
+    const r=hits[i], bw=q?Math.round((r.score/maxScore)*32):0;
+    const src=LANG==='ar'?r.title_ar:r.title_en;
+    h+=`<tr>
+      <td class="td-n">${i+1}</td>
+      <td class="td-rel"><span class="rel-bar" style="width:${bw}px" title="${r.score.toFixed(2)}"></span></td>
+      <td class="td-src" title="${RasaifEngine.esc(src)}">${RasaifEngine.esc(abbr(src,14))}</td>
+      ${showEn?`<td class="td-en">${r.hlEn}</td>`:''}
+      <td class="td-dot"><span class="align-dot" title="${t('align_tip')}"></span></td>
+      ${showAr?`<td class="td-ar">${r.hlAr}</td>`:''}
+    </tr>`;
+  }
+  return h+'</tbody></table>';
+}
+
+function renderKWIC(lines){
+  if(!lines.length) return `<div class="msg">${t('no_results')}</div>`;
+  return '<div class="conc-list">'+lines.map(l=>{
+    const isAr=l.lang==='ar';
+    const src=isAr?l.title_ar:l.title_en, auth=isAr?l.author_ar:l.author_en;
+    return`<div class="conc-item">
+      <div class="conc-meta"><span>${RasaifEngine.esc(src)}</span><span>${RasaifEngine.esc(auth)}</span></div>
+      <div class="conc-en ${isAr?'':''}">
+        <span class="conc-left ${isAr?'td-ar':''}">${RasaifEngine.esc(l.pre)}</span>
+        <span class="conc-kw">${RasaifEngine.esc(l.kw)}</span>
+        <span class="conc-right ${isAr?'td-ar':''}">${RasaifEngine.esc(l.post)}</span>
+      </div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function showInfo(id,e){
+  e.stopPropagation();
+  const tm=textMeta[id]; if(!tm)return;
+  const r=LANG==='ar';
+  document.getElementById('modal-title').textContent=r?tm.title_ar:tm.title_en;
+  const rows=[
+    [t('modal_author'), r?tm.author_ar:tm.author_en],
+    [t('modal_date'),   tm.date||'—'],
+    [t('modal_src_ar'), tm.source_ar||'—'],
+    [t('modal_src_en'), tm.source_en||'—'],
+  ];
+  document.getElementById('modal-body').innerHTML=rows.map(([k,v])=>`
+    <div class="modal-row"><span class="modal-key">${k}</span><span class="modal-val">${RasaifEngine.esc(v)}</span></div>`).join('');
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+
+function abbr(s,n){ return s&&s.length>n?s.slice(0,n-1)+'…':s||''; }
+
+init();
+</script>
+</body>
+</html>

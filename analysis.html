@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html"><span class="site-name" id="hd-name">Raṣāʾif</span><span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span></a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link"         id="nav-s">Search</a>
+      <a href="analysis.html" class="nav-link active"  id="nav-a">Analysis</a>
+      <a href="about.html"    class="nav-link"         id="nav-b">About</a>
+      <a href="cite.html"     class="nav-link"         id="nav-c">Cite</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+<div class="analysis-layout">
+  <aside class="an-sidebar">
+    <div class="sb-heading"><span id="lbl-text">Text</span></div>
+    <select class="an-select" id="text-sel" onchange="run()"><option value="__all__" id="opt-all">All texts (combined)</option></select>
+    <div class="sb-heading" style="margin-top:.75rem"><span id="lbl-lang">Language</span></div>
+    <div class="btn-group" style="flex-direction:column;border-radius:var(--r)">
+      <button class="active" onclick="setLangAn('en')" id="btn-en" style="border-right:none;border-bottom:1px solid var(--rule-strong)">English</button>
+      <button onclick="setLangAn('ar')"                id="btn-ar" style="border-right:none">Arabic</button>
+    </div>
+    <div class="sb-heading" style="margin-top:1.25rem"><span id="lbl-ngram">Phrases</span></div>
+    <div class="btn-group" style="flex-direction:column;border-radius:var(--r)">
+      <button class="active" onclick="setNgram(2)" id="btn-bi" style="border-right:none;border-bottom:1px solid var(--rule-strong)" id="btn-bi">Bigrams</button>
+      <button onclick="setNgram(3)"                id="btn-tri" style="border-right:none">Trigrams</button>
+    </div>
+  </aside>
+  <main class="an-main">
+    <div class="section"><h2 id="h-stats">Corpus Statistics</h2><div class="stats-grid" id="stat-grid"><div class="msg"><span class="spinner"></span></div></div></div>
+    <div class="section"><h2 id="h-freq">Word Frequency</h2><p class="note" id="freq-note">Stopwords removed · Arabic by root · English by base form</p><div id="freq-body"><div class="msg"><span class="spinner"></span></div></div><button class="export-btn" style="margin-top:.5rem" id="btn-exp-freq" onclick="exportFreq()">Export list</button></div>
+    <div class="section"><h2 id="h-ngram">Frequent Phrases</h2><div id="ngram-body"><div class="msg"><span class="spinner"></span></div></div></div>
+    <div class="section"><h2 id="h-colloc">Collocations</h2><p class="note" id="colloc-note">…</p><div id="colloc-body"><div class="msg"><span class="spinner"></span></div></div></div>
+  </main>
+</div>
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+let anLang='en', ngramN=2, statsData=null;
+
+function toggleLang(){ setLang(LANG==='en'?'ar':'en'); applyI18n(); populateSel().then(()=>run()); }
+
+function applyI18n(){
+  document.getElementById('hd-name').textContent=t('site_name');
+  document.getElementById('hd-tag').textContent=t('site_subtitle');
+  document.getElementById('nav-s').textContent=t('nav_search');
+  document.getElementById('nav-a').textContent=t('nav_analysis');
+  document.getElementById('nav-b').textContent=t('nav_about');
+  document.getElementById('nav-c').textContent=t('nav_cite');
+  document.getElementById('lang-btn').textContent=t('toggle_lang');
+  document.getElementById('lbl-text').textContent=t('text_sel_label');
+  document.getElementById('opt-all').textContent=t('all_texts');
+  document.getElementById('lbl-lang').textContent=t('lang_sel_label');
+  document.getElementById('btn-en').textContent='English';
+  document.getElementById('btn-ar').textContent=LANG==='ar'?'العربيّة':'Arabic';
+  document.getElementById('lbl-ngram').textContent=LANG==='ar'?'العبارات':'Phrases';
+  document.getElementById('btn-bi').textContent=t('bigrams');
+  document.getElementById('btn-tri').textContent=t('trigrams');
+  document.getElementById('h-stats').textContent=t('stats_heading');
+  document.getElementById('h-freq').textContent=t('freq_heading');
+  document.getElementById('freq-note').textContent=t('stopwords_note');
+  document.getElementById('h-ngram').textContent=t('ngram_heading');
+  document.getElementById('h-colloc').textContent=t('colloc_heading');
+  document.getElementById('colloc-note').textContent=t('pmi_note');
+  document.getElementById('btn-exp-freq').textContent=t('export_freq');
+}
+
+function setLangAn(l){ anLang=l; document.getElementById('btn-en').classList.toggle('active',l==='en'); document.getElementById('btn-ar').classList.toggle('active',l==='ar'); run(); }
+function setNgram(n){ ngramN=n; document.getElementById('btn-bi').classList.toggle('active',n===2); document.getElementById('btn-tri').classList.toggle('active',n===3); runNgrams(); }
+
+async function populateSel(){
+  const cat=await RasaifEngine.loadCatalogue();
+  const sel=document.getElementById('text-sel');
+  const existing=new Set([...sel.options].map(o=>o.value));
+  for(const category of cat.categories){
+    for(const sub of(category.subcategories||[])){
+      for(const txt of(sub.texts||[])){
+        if(existing.has(txt.id))continue;
+        const o=document.createElement('option'); o.value=txt.id;
+        o.textContent=(LANG==='ar'?txt.title_ar:txt.title_en)+' — '+(LANG==='ar'?txt.author_ar:txt.author_en);
+        sel.appendChild(o);
+      }
+    }
+    for(const txt of(category.texts||[])){
+      if(existing.has(txt.id))continue;
+      const o=document.createElement('option'); o.value=txt.id;
+      o.textContent=(LANG==='ar'?txt.title_ar:txt.title_en)+' — '+(LANG==='ar'?txt.author_ar:txt.author_en);
+      sel.appendChild(o);
+    }
+  }
+}
+
+async function run(){
+  const v=document.getElementById('text-sel').value;
+  const ids=v==='__all__'?null:new Set([v]);
+  const stats=await RasaifEngine.computeStats(ids);
+  statsData=stats;
+  renderStats(stats);
+  const freq=anLang==='ar'?stats.freqAr:stats.freqEn;
+  renderFreq(freq.slice(0,50));
+  await runNgrams(ids);
+  const col=await RasaifEngine.collocations(anLang,4,2,ids);
+  renderColloc(col);
+}
+
+async function runNgrams(ids){
+  if(!ids){ const v=document.getElementById('text-sel').value; ids=v==='__all__'?null:new Set([v]); }
+  const grams=await RasaifEngine.nGrams(ngramN,anLang,ids);
+  renderFreq(grams.slice(0,40),'ngram-body');
+}
+
+function renderStats(s){
+  const isAr=anLang==='ar';
+  const tok=isAr?s.tokAr:s.tokEn, types=isAr?s.typeAr:s.typeEn;
+  const ttr=isAr?(s.ttrAr*100).toFixed(1):(s.ttrEn*100).toFixed(1);
+  const avg=isAr?s.avgAr:s.avgEn;
+  document.getElementById('stat-grid').innerHTML=[
+    [t('stat_pairs'), s.pairs.toLocaleString(), ''],
+    [t('stat_tokens'), tok.toLocaleString(), isAr?'العربيّة':'English'],
+    [t('stat_types'), types.toLocaleString(), t('freq_col_root')],
+    [t('stat_avg'), avg, isAr?'كلمة/جملة':'words/sentence'],
+    [t('stat_ttr'), ttr+'%', t('stat_ttr_sub')],
+  ].map(([l,v,s])=>`<div class="stat-box"><div class="stat-val">${v}</div><div class="stat-lbl">${l}</div>${s?`<div class="stat-sub">${s}</div>`:''}</div>`).join('');
+}
+
+function renderFreq(items, target='freq-body'){
+  const isAr=anLang==='ar';
+  const max=items.length?items[0][1]:1;
+  document.getElementById(target).innerHTML=items.length?`
+    <table class="freq-table"><thead><tr>
+      <th>#</th><th class="${isAr?'td-r':''}">${t('freq_col_root')}</th>
+      <th>${t('freq_col_count')}</th><th style="width:90px"></th>
+    </tr></thead><tbody>`+
+    items.map(([w,n],i)=>`<tr>
+      <td style="color:var(--ink-faint);font-family:var(--mono);font-size:10px">${i+1}</td>
+      <td class="${isAr?'td-ar-word':''}">${RasaifEngine.esc(w)}</td>
+      <td class="td-r">${n}</td>
+      <td class="bar-cell"><span class="bar" style="width:${Math.round((n/max)*75)}px"></span></td>
+    </tr>`).join('')+
+    '</tbody></table>'
+  :`<div class="msg">${t('not_enough')}</div>`;
+}
+
+function renderColloc(items){
+  const isAr=anLang==='ar';
+  const max=items.length?items[0].pmi:1;
+  document.getElementById('colloc-body').innerHTML=items.length?`
+    <table class="coll-table"><thead><tr>
+      <th>${LANG==='ar'?'اللفظ الأول':'Word 1'}</th>
+      <th>${LANG==='ar'?'اللفظ الثاني':'Word 2'}</th>
+      <th class="td-r">${LANG==='ar'?'التواتر':'Count'}</th>
+      <th class="td-r">PMI</th>
+      <th style="width:80px"></th>
+    </tr></thead><tbody>`+
+    items.slice(0,50).map(r=>`<tr>
+      <td class="${isAr?'td-ar-word':''}">${RasaifEngine.esc(r.w1)}</td>
+      <td class="${isAr?'td-ar-word':''}">${RasaifEngine.esc(r.w2)}</td>
+      <td class="td-r">${r.count}</td>
+      <td class="td-r">${r.pmi}</td>
+      <td class="bar-cell"><span class="pmi-bar" style="width:${Math.round((r.pmi/max)*70)}px"></span></td>
+    </tr>`).join('')+
+    '</tbody></table>'
+  :`<div class="msg">${t('not_enough')}</div>`;
+}
+
+function exportFreq(){
+  if(!statsData)return;
+  const freq=anLang==='ar'?statsData.freqAr:statsData.freqEn;
+  const csv='Rank,Word,Frequency\n'+freq.map(([w,c],i)=>`${i+1},"${w}",${c}`).join('\n');
+  RasaifEngine.downloadCSV(csv,`rasaif-frequency-${anLang}.csv`);
+}
+
+setLang(LANG); applyI18n();
+populateSel().then(()=>run());
+</script>
+</body>
+</html>
