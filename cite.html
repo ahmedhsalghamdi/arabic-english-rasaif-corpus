@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — Cite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html"><span class="site-name" id="hd-name">Raṣāʾif</span><span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span></a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link"        id="nav-s">Search</a>
+      <a href="analysis.html" class="nav-link"        id="nav-a">Analysis</a>
+      <a href="about.html"    class="nav-link"        id="nav-b">About</a>
+      <a href="cite.html"     class="nav-link active" id="nav-c">Cite</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap-prose">
+  <div class="ornament">◈ · ◈ · ◈</div>
+  <h1 id="cite-h1">How to Cite</h1>
+
+  <div id="cite-en">
+    <p>If you use the Raṣāʾif corpus in research, teaching, or any published work, please cite it as follows.</p>
+
+    <h2>Citing the corpus</h2>
+
+    <div class="cite-label">Classical Arabic citation style</div>
+    <div class="cite-box">
+      الغامديّ، أحمد حسن. <span style="font-style:italic">الرصائف: خزانةُ تراجمِ الإنجليز لكتب العرب</span>. خزانةٌ على الشبكة، ١٤٤٧هـ / ٢٠٢٦م. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <div class="cite-label">APA (7th edition)</div>
+    <div class="cite-box ltr">
+      Al-Ghamdi, A. H. (2026). <em>Raṣāʾif: An Arabic–English parallel corpus of classical texts</em> [Online corpus]. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <div class="cite-label">Chicago (17th edition)</div>
+    <div class="cite-box ltr">
+      Al-Ghamdi, Ahmed Hasan. <em>Raṣāʾif: An Arabic–English Parallel Corpus of Classical Texts</em>. Online corpus, 2026. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/.
+    </div>
+
+    <div class="cite-label">BibTeX</div>
+    <div class="cite-box ltr"><pre>@misc{alghamdi2026rasaif,
+  author  = {Al-Ghamdi, Ahmed Hasan},
+  title   = {{Raṣāʾif}: An {Arabic}--{English} Parallel Corpus
+             of Classical Texts},
+  year    = {2026},
+  url     = {https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/}
+}</pre></div>
+    <button class="copy-btn" onclick="copyBib(this)">Copy BibTeX</button>
+
+    <h2>Citing a specific text</h2>
+    <p>When citing a specific text from the corpus, cite the original edition and translation, then note that the text was accessed via Raṣāʾif. Example for the <em>Kitāb al-Ṭabīkh</em>:</p>
+
+    <div class="cite-label">Classical Arabic</div>
+    <div class="cite-box">
+      ابن سيّار الوراق، أبو محمد المظفَّر. <span style="font-style:italic">كتابُ الطبيخ وإصلاح الأغذية المأكولات</span>. تحقيق كنعان سليمان الموصلي. بغداد: دار الشؤون الثقافيّة، ١٩٨٧م. [متاحٌ في خزانة الرصائف، ترجمة نوال نصرالله].
+    </div>
+
+    <div class="cite-label">APA</div>
+    <div class="cite-box ltr">
+      Ibn Sayyār al-Warrāq. (c. 950). <em>Annals of the caliphs' kitchens</em> (N. Nasrallah, Trans.). Brill. Accessed via Al-Ghamdi, A. H. (2026). <em>Raṣāʾif</em> [Online corpus]. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <h2>Terms of use</h2>
+    <p>The Raṣāʾif software and interface are released under the MIT License. The underlying texts and translations remain the property of their respective owners; this corpus claims no rights over them. Users are responsible for ensuring their use complies with applicable copyright law. The text files are made available for non-commercial research and educational use.</p>
+  </div>
+
+  <div id="cite-ar" style="display:none">
+    <p>من انتفع بالرصائف في بحثٍ أو تدريسٍ أو شيءٍ يُنشر، فنرجو أن يستشهدَ بها ويعزوَ إليها.</p>
+
+    <h2>العزوُ إلى الخزانة كلِّها</h2>
+
+    <div class="cite-label">على الطريقة العربية في العزو</div>
+    <div class="cite-box">
+      الغامديّ، أحمد حسن. <span style="font-style:italic">الرصائف: خزانةُ تراجمِ الإنجليز لكتب العرب</span>. خزانةٌ على الشبكة، ١٤٤٧هـ / ٢٠٢٦م. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <div class="cite-label">APA (7th edition)</div>
+    <div class="cite-box ltr">
+      Al-Ghamdi, A. H. (2026). <em>Raṣāʾif: An Arabic–English parallel corpus of classical texts</em> [Online corpus]. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <div class="cite-label">Chicago (17th edition)</div>
+    <div class="cite-box ltr">
+      Al-Ghamdi, Ahmed Hasan. <em>Raṣāʾif: An Arabic–English Parallel Corpus of Classical Texts</em>. Online corpus, 2026. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/.
+    </div>
+
+    <div class="cite-label">BibTeX</div>
+    <div class="cite-box ltr"><pre>@misc{alghamdi2026rasaif,
+  author  = {Al-Ghamdi, Ahmed Hasan},
+  title   = {{Raṣāʾif}: An {Arabic}--{English} Parallel Corpus
+             of Classical Texts},
+  year    = {2026},
+  url     = {https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/}
+}</pre></div>
+    <button class="copy-btn" onclick="copyBib(this)">نسخٌ إلى الحافظة</button>
+
+    <h2>العزوُ إلى كتابٍ بعينه</h2>
+    <p>من أراد أن يعزوَ إلى نصٍّ مخصوصٍ من نصوص الخزانة، فليستشهدَ بالطبعة العربيّة والترجمة الإنجليزيّة المعتمدتين، ثم يُشير إلى الخزانة. ومثالُه للطبيخ:</p>
+
+    <div class="cite-label">على الطريقة العربية</div>
+    <div class="cite-box">
+      ابن سيّار الوراق، أبو محمد المظفَّر. <span style="font-style:italic">كتابُ الطبيخ وإصلاح الأغذية المأكولات</span>. تحقيق كنعان سليمان الموصلي. بغداد: دار الشؤون الثقافيّة، ١٩٨٧م. [متاحٌ في خزانة الرصائف، ترجمة نوال نصرالله].
+    </div>
+
+    <div class="cite-label">APA</div>
+    <div class="cite-box ltr">
+      Ibn Sayyār al-Warrāq. (c. 950). <em>Annals of the caliphs' kitchens</em> (N. Nasrallah, Trans.). Brill. Accessed via Al-Ghamdi, A. H. (2026). <em>Raṣāʾif</em> [Online corpus]. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <h2>شرطُ الانتفاع</h2>
+    <p>برنامجُ الرصائف وواجهتُه مبذولان بموجب رخصة MIT. وأمّا النصوصُ والترجماتُ المضمَّنةُ فيها فهي باقيةٌ على حقوق أصحابها، ولا تدَّعي الخزانةُ عليها شيئاً. والمنتفعُ مسؤولٌ وحده عن التثبُّت من أنّ انتفاعَه لا يتعدَّى ما يُجيزه القانون. وتُتاح ملفَّاتُ النصوص للانتفاع البحثيّ والتعليميّ دون التجاريّ.</p>
+  </div>
+
+  <div class="ornament" style="margin-top:3rem">◈ · ◈ · ◈</div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script>
+function toggleLang(){ setLang(LANG==='en'?'ar':'en'); applyI18n(); }
+function applyI18n(){
+  document.getElementById('hd-name').textContent=t('site_name');
+  document.getElementById('hd-tag').textContent=t('site_subtitle');
+  document.getElementById('nav-s').textContent=t('nav_search');
+  document.getElementById('nav-a').textContent=t('nav_analysis');
+  document.getElementById('nav-b').textContent=t('nav_about');
+  document.getElementById('nav-c').textContent=t('nav_cite');
+  document.getElementById('lang-btn').textContent=t('toggle_lang');
+  document.getElementById('cite-h1').textContent=t('cite_heading');
+  document.getElementById('cite-en').style.display=LANG==='en'?'block':'none';
+  document.getElementById('cite-ar').style.display=LANG==='ar'?'block':'none';
+}
+function copyBib(btn){
+  const pre=`@misc{alghamdi2026rasaif,\n  author  = {Al-Ghamdi, Ahmed Hasan},\n  title   = {{Raṣāʾif}: An {Arabic}--{English} Parallel Corpus\n             of Classical Texts},\n  year    = {2026},\n  url     = {https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/}\n}`;
+  navigator.clipboard.writeText(pre).then(()=>{ btn.textContent=LANG==='ar'?'نُسخ ✓':'Copied ✓'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent=LANG==='ar'?'نسخٌ إلى الحافظة':'Copy BibTeX'; btn.classList.remove('copied'); },2000); });
+}
+setLang(LANG); applyI18n();
+</script>
+</body>
+</html>

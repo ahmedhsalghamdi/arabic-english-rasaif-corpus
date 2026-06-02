@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — Arabic–English Parallel Corpus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name"  id="hd-name">Raṣāʾif</span>
+      <span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link active" id="nav-s">Search</a>
+      <a href="analysis.html" class="nav-link"        id="nav-a">Analysis</a>
+      <a href="about.html"    class="nav-link"        id="nav-b">About</a>
+      <a href="cite.html"     class="nav-link"        id="nav-c">Cite</a>
+      <a href="aranjiyya.html" class="nav-link"        id="nav-e">al-ʿAranijiyya</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="corpus-banner">
+  <div class="banner-inner">
+    <div class="banner-stat"><span class="banner-num" id="bn-texts">—</span><span class="banner-lbl" id="bn-texts-l">Texts</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-pairs">—</span><span class="banner-lbl" id="bn-pairs-l">Sentence Pairs</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-ar">—</span><span class="banner-lbl" id="bn-ar-l">Arabic Words</span></div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat"><span class="banner-num" id="bn-en">—</span><span class="banner-lbl" id="bn-en-l">English Words</span></div>
+  </div>
+</div>
+
+<div class="search-layout">
+  <aside class="sidebar">
+    <div class="sb-heading">
+      <span id="sb-lbl">Texts</span>
+      <div class="sb-btns">
+        <button class="btn-ghost" id="btn-all"  onclick="selectAll(true)">Select all</button>
+        <button class="btn-ghost" id="btn-none" onclick="selectAll(false)">Clear all</button>
+      </div>
+    </div>
+    <div id="book-list"><div style="font-size:12px;color:var(--ink-faint);padding:4px"><span class="spinner"></span><span id="load-msg"> Loading…</span></div></div>
+  </aside>
+
+  <div class="main-area">
+    <div class="searchbar">
+      <div class="search-row">
+        <input type="text" id="q" autocomplete="off" oninput="doSearch()" placeholder="Search in English or Arabic…">
+        <select class="ctrl-sel" id="lang-sel" onchange="doSearch()">
+          <option value="both" id="opt-both">Both languages</option>
+          <option value="en"   id="opt-en">English only</option>
+          <option value="ar"   id="opt-ar">Arabic only</option>
+        </select>
+        <div class="btn-group" id="view-btns">
+          <button class="active" onclick="setView('parallel')" id="btn-par">Parallel table</button>
+          <button              onclick="setView('conc')"     id="btn-kwic">Concordance</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label" id="lbl-match">Match:</span>
+        <div class="btn-group" id="mode-btns">
+          <button class="active" onclick="setMode('any')"   id="btn-any">Any order</button>
+          <button onclick="setMode('exact')"                id="btn-exact">Exact phrase</button>
+          <button onclick="setMode('or')"                   id="btn-or">Any word</button>
+        </div>
+        <label class="morph-label">
+          <input type="checkbox" id="morpho" onchange="doSearch()" checked>
+          <span id="lbl-morph">Morphology</span>
+          <span class="morph-hint" id="morph-hint">(كاتب/كتبت = كتب · ran/shown = run/show)</span>
+        </label>
+        <span class="filter-label" id="lbl-excl">Exclude:</span>
+        <input type="text" id="excl" oninput="doSearch()" placeholder="word or phrase…">
+      </div>
+    </div>
+
+    <div class="stats-bar" id="stats-bar">Δ</div>
+    <div id="results"><div class="msg"><span class="spinner"></span><span id="init-msg"> Loading corpus files…</span></div></div>
+  </div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+let view='parallel', mode='any';
+
+function toggleLang(){ setLang(LANG==='en'?'ar':'en'); applyI18n(); }
+
+function applyI18n(){
+  const r=LANG==='ar';
+  document.getElementById('hd-name').textContent=t('site_name');
+  document.getElementById('hd-tag').textContent=t('site_subtitle');
+  document.getElementById('nav-s').textContent=t('nav_search');
+  document.getElementById('nav-a').textContent=t('nav_analysis');
+  document.getElementById('nav-b').textContent=t('nav_about');
+  document.getElementById('nav-c').textContent=t('nav_cite');
+  document.getElementById('lang-btn').textContent=t('toggle_lang');
+  document.getElementById('sb-lbl').textContent=t('texts_heading');
+  document.getElementById('btn-all').textContent=t('select_all');
+  document.getElementById('btn-none').textContent=t('clear_all');
+  document.getElementById('opt-both').textContent=t('lang_both');
+  document.getElementById('opt-en').textContent=t('lang_en');
+  document.getElementById('opt-ar').textContent=t('lang_ar');
+  document.getElementById('btn-par').textContent=t('output_parallel');
+  document.getElementById('btn-kwic').textContent=t('output_kwic');
+  document.getElementById('lbl-match').textContent=t('match_label')+':';
+  document.getElementById('btn-any').textContent=t('match_order');
+  document.getElementById('btn-exact').textContent=t('match_phrase');
+  document.getElementById('btn-or').textContent=t('match_any');
+  document.getElementById('lbl-morph').textContent=t('match_morph');
+  document.getElementById('morph-hint').textContent='('+t('morph_hint')+')';
+  document.getElementById('lbl-excl').textContent=t('exclude_label')+':';
+  document.getElementById('q').placeholder=t('search_placeholder');
+  document.getElementById('excl').placeholder=t('excl_placeholder');
+  document.getElementById('bn-texts-l').textContent=t('texts_heading');
+  document.getElementById('bn-pairs-l').textContent=t('stat_pairs');
+  document.getElementById('bn-ar-l').textContent=r?'جملةُ كلمِ العربية':'Arabic Words';
+  document.getElementById('bn-en-l').textContent=r?'جملةُ كلمِ الإنجليزية':'English Words';
+  document.getElementById('load-msg').textContent=' '+t('loading');
+  document.getElementById('init-msg').textContent=' '+t('loading');
+  renderSidebar();
+  doSearch();
+}
+
+async function init(){
+  setLang(LANG); applyI18n();
+  try {
+    await RasaifEngine.loadBooks(name => {
+      document.getElementById('load-msg').textContent=` ${t('loading')} ${name}`;
+    });
+    renderSidebar();
+    updateBanner();
+    document.getElementById('stats-bar').textContent=t('ready_msg');
+    doSearch();
+  } catch(e) {
+    document.getElementById('book-list').innerHTML=`<div style="font-size:12px;color:var(--ink-faint);padding:6px">${e.message}</div>`;
+    document.getElementById('results').innerHTML=`<div class="msg">${e.message}</div>`;
+  }
+}
+
+function updateBanner(){
+  const books=RasaifEngine.books();
+  let pairs=0,tokAr=0,tokEn=0;
+  for (const b of books) {
+    pairs+=b.pairs.length;
+    for (const p of b.pairs){
+      tokAr+=p.ar.split(/\s+/).filter(Boolean).length;
+      tokEn+=p.en.split(/\s+/).filter(Boolean).length;
+    }
+  }
+  document.getElementById('bn-texts').textContent=books.length;
+  document.getElementById('bn-pairs').textContent=pairs.toLocaleString();
+  document.getElementById('bn-ar').textContent=tokAr.toLocaleString();
+  document.getElementById('bn-en').textContent=tokEn.toLocaleString();
+}
+
+function renderSidebar(){
+  const books=RasaifEngine.books();
+  if (!books.length) return;
+  document.getElementById('book-list').innerHTML=books.map((b,i)=>`
+    <label class="text-item">
+      <input type="checkbox" ${b.checked?'checked':''} onchange="toggle(${i},this.checked)">
+      <div class="text-item-text">
+        <div class="text-item-title">${RasaifEngine.esc(b.name)}</div>
+        <div class="text-item-author">${b.pairs.length.toLocaleString()} ${LANG==='ar'?'زوج':'pairs'}</div>
+      </div>
+    </label>`).join('');
+}
+
+function toggle(i,v){ RasaifEngine.books()[i].checked=v; doSearch(); }
+function selectAll(v){ RasaifEngine.books().forEach(b=>b.checked=v); renderSidebar(); doSearch(); }
+function setView(v){ view=v; document.querySelectorAll('#view-btns button').forEach((b,i)=>b.classList.toggle('active',(i===0&&v==='parallel')||(i===1&&v==='conc'))); doSearch(); }
+function setMode(m){ mode=m; document.querySelectorAll('#mode-btns button').forEach((b,i)=>b.classList.toggle('active',['any','exact','or'][i]===m)); RasaifEngine.rebuild(document.getElementById('morpho').checked); doSearch(); }
+
+let searchTimer=null;
+function doSearch(){ clearTimeout(searchTimer); searchTimer=setTimeout(_search,120); }
+
+function _search(){
+  const q=(document.getElementById('q').value||'').trim();
+  const excl=document.getElementById('excl').value||'';
+  const lang=document.getElementById('lang-sel').value;
+  const useMorpho=document.getElementById('morpho').checked;
+  const books=RasaifEngine.books();
+  if (!books.length) return;
+  if (!books.some(b=>b.checked)){
+    document.getElementById('stats-bar').textContent=t('no_texts');
+    document.getElementById('results').innerHTML=`<div class="msg">${t('no_texts')}</div>`;
+    return;
+  }
+  RasaifEngine.rebuild(useMorpho);
+  const {hits,total}=RasaifEngine.search({query:q,lang,mode,useMorpho,exclude:excl});
+  const maxScore=hits.length?Math.max(hits[0].score,0.01):0.01;
+  const active=books.filter(b=>b.checked).length;
+  let sb=`${hits.length} ${LANG==='ar'?'من':'of'} ${total} ${LANG==='ar'?'زوج':'pairs'}`;
+  if(q) sb+=`  ·  «${q}» (${mode}${useMorpho?', '+t('match_morph'):''})`
+  if(q&&hits.length) sb+=`  ·  ${t('ranked')}`;
+  sb+=`  ·  ${active} ${LANG==='ar'?'نصٍّ نشطٍ':'text(s) active'}`;
+  document.getElementById('stats-bar').textContent=sb;
+  if (!hits.length){ document.getElementById('results').innerHTML=`<div class="msg">${t('no_results')}<br><small>${t('no_results_hint')}</small></div>`; return; }
+  const el=document.getElementById('results');
+  if (view==='parallel') el.innerHTML=renderParallel(hits,lang,maxScore,q);
+  else { const lines=RasaifEngine.makeConcordance(hits,q,lang); el.innerHTML=renderKWIC(lines); }
+}
+
+function renderParallel(hits,lang,maxScore,q){
+  const showAr=lang!=='en', showEn=lang!=='ar';
+  let h=`<table class="ptable"><thead><tr>
+    <th>#</th><th>${t('col_rel')}</th><th>${t('col_source')}</th>
+    ${showEn?`<th>${t('col_en')}</th>`:''}
+    <th class="td-dot"></th>
+    ${showAr?`<th class="th-ar">${t('col_ar')}</th>`:''}
+  </tr></thead><tbody>`;
+  for(let i=0;i<hits.length;i++){
+    const r=hits[i], bw=q?Math.round((r.score/maxScore)*32):0;
+    h+=`<tr>
+      <td class="td-n">${i+1}</td>
+      <td class="td-rel"><span class="rel-bar" style="width:${bw}px" title="${r.score.toFixed(2)}"></span></td>
+      <td class="td-src" title="${RasaifEngine.esc(r.src)}">${RasaifEngine.esc(abbr(r.src,14))}</td>
+      ${showEn?`<td class="td-en">${r.hlEn}</td>`:''}
+      <td class="td-dot"><span class="align-dot" title="${t('align_tip')}"></span></td>
+      ${showAr?`<td class="td-ar">${r.hlAr}</td>`:''}
+    </tr>`;
+  }
+  return h+'</tbody></table>';
+}
+
+function renderKWIC(lines){
+  if (!lines.length) return `<div class="msg">${t('no_results')}</div>`;
+  return '<div class="conc-list">'+lines.map(l=>`
+    <div class="conc-item">
+      <div class="conc-meta"><span>${RasaifEngine.esc(l.src)}</span><span style="color:var(--ink-faint)">${l.score.toFixed(2)}</span></div>
+      <div class="conc-en">
+        <span class="conc-left ${l.lang==='ar'?'td-ar':''}">${RasaifEngine.esc(l.pre)}</span>
+        <span class="conc-kw">${RasaifEngine.esc(l.kw)}</span>
+        <span class="conc-right ${l.lang==='ar'?'td-ar':''}">${RasaifEngine.esc(l.post)}</span>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+function abbr(s,n){ return s&&s.length>n?s.slice(0,n-1)+'…':s||''; }
+
+init();
+</script>
+</body>
+</html>

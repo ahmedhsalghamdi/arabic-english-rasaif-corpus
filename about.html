@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — About</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html"><span class="site-name" id="hd-name">Raṣāʾif</span><span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span></a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link"        id="nav-s">Search</a>
+      <a href="analysis.html" class="nav-link"        id="nav-a">Analysis</a>
+      <a href="about.html"    class="nav-link active" id="nav-b">About</a>
+      <a href="cite.html"     class="nav-link"        id="nav-c">Cite</a>
+      <a href="aranjiyya.html" class="nav-link"        id="nav-e">al-ʿAranijiyya</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap-prose">
+  <div class="ornament">◈ · ◈ · ◈</div>
+  <h1 id="about-h1">About the Corpus</h1>
+  <div id="about-en">
+    <p>Raṣāʾif is a corpus bringing together selected texts from the classical Arabic tradition — in scholarship and in letters — alongside their published English translations, presented sentence by sentence and paragraph by paragraph in a parallel table. It is built for researchers in Arabic language, translation studies, and the humanities.</p>
+    <h2>Categories</h2>
+    <p>The corpus is organised into two categories: <strong>Scientific Works</strong> — jurisprudence, medicine, biography, and the sciences — and <strong>Literary Works</strong> — artistic prose and the maqāmāt. Further texts will be added as the corpus grows.</p>
+    <h2>How texts are aligned</h2>
+    <p>Each Arabic unit is set beside its English translation equivalent. The alignment is manual: every pair has been verified to confirm genuine correspondence between original and translation, not merely positional matching. The gold dot (●) visible between each row in the parallel table marks a verified pair.</p>
+    <h2>How search works</h2>
+    <p>Enter a word and every sentence in the corpus that contains it — or any of its derived forms — is returned. With morphological search enabled, a query for <em>kataba</em> will also return <em>kātib</em>, <em>maktūb</em>, <em>katabtu</em>, since they share the same root. Results are ordered by specificity: sentences where the term is most distinctive and closely clustered come first.</p>
+    <h2>Sources & provenance</h2>
+    <table class="prov-table" id="prov-table">
+      <thead><tr>
+        <th id="ph-auth">Author</th><th id="ph-title">Title</th>
+        <th id="ph-ar">Arabic edition</th><th id="ph-en">English translation</th>
+        <th id="ph-cat">Category</th>
+      </tr></thead>
+      <tbody id="prov-body"><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);padding:1rem">Loading…</td></tr></tbody>
+    </table>
+    <h2>Adding new texts</h2>
+    <p>A converter tool is included in the corpus. Upload a Word or CSV file with two columns — Arabic and English — and the tool extracts the parallel pairs and generates the metadata entry. Upload the two text files to the appropriate folder in the repository, paste the metadata block into <code>corpus/index.json</code>, and the text appears in the corpus.</p>
+    <p><a href="converter.html" style="color:var(--gold)">Open the converter →</a></p>
+  </div>
+
+  <div id="about-ar" style="display:none">
+    <p>الرصائفُ خزانةٌ جمعنا فيها طائفةً من عيون كتب العرب في العلوم والآداب، وقابلناها بترجماتها الإنجليزيّة المطبوعة المتداولة، ليجد الباحثُ والقارئُ في مكانٍ واحد النصَّ العربيَّ الأصيلَ وما قابله من كلام الإنجليز عنه، مقابلةً جملةً بجملة وفقرةً بفقرة. والغرضُ من هذه الخزانة أن يتناولها دارسُ اللسان والمترجمُ والباحثُ في فنون العربيّة، فيُفتِّش في ألفاظها ويستقري أساليبها ويتأمَّل كيف نقل الإنجليزُ كلامَ العرب.</p>
+    <h2>أبوابُ الخزانة</h2>
+    <p>تنقسم الخزانةُ إلى صنفين: <strong>رصائفُ كتب العلم</strong>، وتضمُّ ما اخترناه من كتب الفقه والطبّ والتراجم وسائر العلوم. و<strong>رصائفُ كتب الأدب</strong>، وتضمُّ ما اخترناه من كتب النثر الفنّي والمقامات وأشباهها. وفي كلّ صنفٍ نصوصٌ قائمة، ونأمل أن تتَّسع الخزانةُ بما يُضيفه أصحابُها من نصوصٍ جديدة.</p>
+    <h2>وجهُ المقابلة في الخزانة</h2>
+    <p>قُوبلت النصوصُ جملةً بجملة: فكلُّ سطرٍ عربيٌّ في جدول الرصائف يُحاذيه ما يقابله من الترجمة الإنجليزيّة. وقد تحقَّقنا أن يكون كلٌّ منهما ترجمةً حقيقيّةً للآخر، لا مجرَّدَ تقابلٍ عدديّ. والنقطةُ الذهبيّة (●) التي تراها بين كلّ سطرين دليلٌ على ذلك.</p>
+    <h2>كيف يعمل التفتيش</h2>
+    <p>من أراد أن يتفتَّش عن لفظٍ في الخزانة فليكتبه، فتُعرض له كلُّ جملةٍ في النصوص يرد فيها ذلك اللفظُ أو ما تصرَّف منه. فمن سأل عن «كتب» جاءته الجملُ التي فيها كاتبٌ أو مكتوبٌ أو كتبتُ، لأنها كلَّها من معدنٍ واحد. ومن أراد العبارةَ بعينها كما هي فذلك إليه. وتأتي النتائجُ مرتَّبةً على قدر خصوصيَّة اللفظ: فما كان فيه اللفظُ أظهرَ وأخصَّ قُدِّم، وما كان عارضاً أُخِّر.</p>
+    <h2>أصولُ النصوص وطبعاتها</h2>
+    <table class="prov-table" id="prov-table-ar">
+      <thead><tr>
+        <th>المؤلِّف</th><th>عنوانُ الكتاب</th>
+        <th>الطبعةُ العربيّة</th><th>الترجمةُ الإنجليزيّة</th>
+        <th>البابُ والفصل</th>
+      </tr></thead>
+      <tbody id="prov-body-ar"><tr><td colspan="5" style="text-align:center;color:var(--ink-faint);padding:1rem">جارٍ التحميل…</td></tr></tbody>
+    </table>
+    <h2>إضافةُ نصوصٍ جديدة</h2>
+    <p>أعددنا في الخزانة أداةً تُيسِّر على صاحب النصّ إضافتَه: يُلقي ملفَّه — سواءٌ أكان جدولَ Word أم من صنف CSV — في تلك الأداة، فتستخرج منه النصَّ العربيَّ والإنجليزيَّ وتُهيِّئهما للرفع إلى الخزانة. ثم يُسجَّل خبرُ النصّ في قائمة الخزانة، ويُرفع الجميعُ إلى موضعه.</p>
+    <p><a href="converter.html" style="color:var(--gold)">أداةُ التحويل ←</a></p>
+  </div>
+
+  <div class="ornament" style="margin-top:3rem">◈ · ◈ · ◈</div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+function toggleLang(){ setLang(LANG==='en'?'ar':'en'); applyI18n(); populateProv(); }
+
+function applyI18n(){
+  document.getElementById('hd-name').textContent=t('site_name');
+  document.getElementById('hd-tag').textContent=t('site_subtitle');
+  document.getElementById('nav-s').textContent=t('nav_search');
+  document.getElementById('nav-a').textContent=t('nav_analysis');
+  document.getElementById('nav-b').textContent=t('nav_about');
+  document.getElementById('nav-c').textContent=t('nav_cite');
+  document.getElementById('lang-btn').textContent=t('toggle_lang');
+  document.getElementById('about-h1').textContent=t('about_heading');
+  document.getElementById('about-en').style.display=LANG==='en'?'block':'none';
+  document.getElementById('about-ar').style.display=LANG==='ar'?'block':'none';
+}
+
+async function populateProv(){
+  const cat=await RasaifEngine.loadCatalogue();
+  const texts=RasaifEngine.allTexts(cat);
+  const catMap={};
+  for(const category of cat.categories)
+    for(const sub of(category.subcategories||[]))
+      for(const txt of(sub.texts||[]))
+        catMap[txt.id]={catEn:category.en,catAr:category.ar,subEn:sub.en||'',subAr:sub.ar||''};
+
+  const rowsEn=texts.map(txt=>{
+    const c=catMap[txt.id]||{};
+    return `<tr>
+      <td>${RasaifEngine.esc(txt.author_en)}<br><small style="color:var(--ink-faint)">${RasaifEngine.esc(txt.author_ar)}</small></td>
+      <td class="ar-cell">${RasaifEngine.esc(txt.title_ar)}</td>
+      <td style="font-size:12px;color:var(--ink-mid)">${RasaifEngine.esc(txt.source_ar||'—')}</td>
+      <td style="font-size:12px;color:var(--ink-mid)">${RasaifEngine.esc(txt.source_en||'—')}</td>
+      <td style="font-size:11px;color:var(--ink-faint)">${RasaifEngine.esc(c.subEn||c.catEn||'—')}</td>
+    </tr>`;
+  });
+  const pb=document.getElementById('prov-body');
+  if(pb) pb.innerHTML=rowsEn.join('');
+
+  const rowsAr=texts.map(txt=>{
+    const c=catMap[txt.id]||{};
+    return `<tr>
+      <td class="ar-cell">${RasaifEngine.esc(txt.author_ar)}</td>
+      <td class="ar-cell">${RasaifEngine.esc(txt.title_ar)}</td>
+      <td style="font-size:12px;color:var(--ink-mid)">${RasaifEngine.esc(txt.source_ar||'—')}</td>
+      <td style="font-size:12px;color:var(--ink-mid)">${RasaifEngine.esc(txt.source_en||'—')}</td>
+      <td class="ar-cell" style="font-size:13px;color:var(--ink-faint)">${RasaifEngine.esc(c.subAr||c.catAr||'—')}</td>
+    </tr>`;
+  });
+  const pba=document.getElementById('prov-body-ar');
+  if(pba) pba.innerHTML=rowsAr.join('');
+}
+
+setLang(LANG); applyI18n(); populateProv();
+</script>
+</body>
+</html>
