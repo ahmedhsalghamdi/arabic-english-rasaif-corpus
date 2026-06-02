@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raṣāʾif — Arabic–English Parallel Corpus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <div class="page-wrap header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name" id="hd-name">Raṣāʾif</span>
+      <span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link active" id="nav-search">Search</a>
+      <a href="analysis.html" class="nav-link"        id="nav-analysis">Analysis</a>
+      <a href="about.html"    class="nav-link"        id="nav-about">About</a>
+      <a href="cite.html"     class="nav-link"        id="nav-cite">Cite</a>
+      <button class="nav-lang-btn" id="lang-toggle" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ CORPUS STATS BANNER ══ -->
+<div class="corpus-banner" id="stats-banner">
+  <div class="page-wrap banner-inner">
+    <div class="banner-stat">
+      <span class="banner-stat-num" id="bn-texts">—</span>
+      <span class="banner-stat-label" id="bn-texts-lbl">Texts</span>
+    </div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat">
+      <span class="banner-stat-num" id="bn-pairs">—</span>
+      <span class="banner-stat-label" id="bn-pairs-lbl">Sentence Pairs</span>
+    </div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat">
+      <span class="banner-stat-num" id="bn-tok-ar">—</span>
+      <span class="banner-stat-label" id="bn-tok-ar-lbl">Arabic Tokens</span>
+    </div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat">
+      <span class="banner-stat-num" id="bn-tok-en">—</span>
+      <span class="banner-stat-label" id="bn-tok-en-lbl">English Tokens</span>
+    </div>
+    <div class="banner-sep"></div>
+    <div class="banner-stat">
+      <span class="banner-stat-num" id="bn-cats">—</span>
+      <span class="banner-stat-label" id="bn-cats-lbl">Categories</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN LAYOUT ══ -->
+<div class="search-layout">
+
+  <!-- SIDEBAR: text selection tree -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-heading">
+        <span id="sb-texts-lbl">Texts</span>
+        <div class="sidebar-quick">
+          <button class="btn-ghost" id="btn-sel-all" onclick="selectAll(true)">Select all</button>
+          <button class="btn-ghost" id="btn-clr-all" onclick="selectAll(false)">Clear all</button>
+        </div>
+      </div>
+      <div id="text-tree">
+        <div class="status-msg"><span class="spinner"></span> <span id="tree-loading">Loading…</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN: search controls + results -->
+  <main class="main-area">
+
+    <!-- Search controls -->
+    <div class="search-controls">
+      <div class="search-row">
+        <input type="text" class="search-input" id="query-input"
+               placeholder="Search in Arabic or English…"
+               onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="search-btn" id="search-btn" onclick="doSearch()">Search</button>
+      </div>
+
+      <div class="control-row">
+        <!-- Language filter -->
+        <div class="control-group">
+          <span class="control-label" id="lbl-lang">Language</span>
+          <div class="radio-row">
+            <label class="radio-pill"><input type="radio" name="lang" value="both" checked> <span id="opt-both">Both languages</span></label>
+            <label class="radio-pill"><input type="radio" name="lang" value="ar"> <span id="opt-ar">Arabic only</span></label>
+            <label class="radio-pill"><input type="radio" name="lang" value="en"> <span id="opt-en">English only</span></label>
+          </div>
+        </div>
+
+        <!-- Output mode -->
+        <div class="control-group">
+          <span class="control-label" id="lbl-output">Output</span>
+          <div class="radio-row">
+            <label class="radio-pill"><input type="radio" name="output" value="parallel" checked> <span id="opt-parallel">Parallel table</span></label>
+            <label class="radio-pill"><input type="radio" name="output" value="kwic"> <span id="opt-kwic">Concordance (KWIC)</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <!-- Match type -->
+        <div class="control-group">
+          <span class="control-label" id="lbl-match">Match</span>
+          <div class="radio-row">
+            <label class="radio-pill"><input type="radio" name="match" value="order" checked> <span id="opt-order">Any order</span></label>
+            <label class="radio-pill"><input type="radio" name="match" value="phrase"> <span id="opt-phrase">Exact phrase</span></label>
+            <label class="radio-pill"><input type="radio" name="match" value="any"> <span id="opt-any">Any word</span></label>
+            <label class="radio-pill"><input type="radio" name="match" value="morph"> <span id="opt-morph">Morphology</span></label>
+          </div>
+          <div class="morph-badge" id="morph-hint">كاتب/كتبت/مكتوب = كتب · ran/shown = run/show</div>
+        </div>
+
+        <!-- Exclude -->
+        <div class="control-group">
+          <span class="control-label" id="lbl-excl">Exclude</span>
+          <div class="exclude-row">
+            <input type="text" class="exclude-input" id="excl-input" placeholder="term to exclude…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results area -->
+    <div id="results-area">
+      <div class="status-msg" id="initial-msg"><span id="ready-msg">Ready. Select texts and enter a search term.</span></div>
+    </div>
+  </main>
+</div>
+
+<!-- ══ TEXT INFO MODAL ══ -->
+<div class="modal-backdrop" id="info-modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title">—</div>
+    <div id="modal-body"></div>
+    <button class="modal-close" id="modal-close-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+/* ══ Language toggle ══ */
+function toggleLang() {
+  const next = LANG === 'en' ? 'ar' : 'en';
+  setLang(next);
+  applyI18n();
+}
+
+function applyI18n() {
+  document.getElementById('hd-name').textContent    = t('site_name');
+  document.getElementById('hd-tag').textContent     = t('site_subtitle');
+  document.getElementById('nav-search').textContent  = t('nav_search');
+  document.getElementById('nav-analysis').textContent= t('nav_analysis');
+  document.getElementById('nav-about').textContent   = t('nav_about');
+  document.getElementById('nav-cite').textContent    = t('nav_cite');
+  document.getElementById('lang-toggle').textContent = t('toggle_lang');
+  document.getElementById('sb-texts-lbl').textContent= t('texts_heading');
+  document.getElementById('btn-sel-all').textContent  = t('select_all');
+  document.getElementById('btn-clr-all').textContent  = t('clear_all');
+  document.getElementById('lbl-lang').textContent    = t('lang_selector');
+  document.getElementById('lbl-output').textContent  = 'Output';
+  document.getElementById('lbl-match').textContent   = 'Match';
+  document.getElementById('lbl-excl').textContent    = t('exclude_label');
+  document.getElementById('opt-both').textContent    = t('lang_both');
+  document.getElementById('opt-ar').textContent      = t('lang_ar');
+  document.getElementById('opt-en').textContent      = t('lang_en');
+  document.getElementById('opt-parallel').textContent= t('output_parallel');
+  document.getElementById('opt-kwic').textContent    = t('output_kwic');
+  document.getElementById('opt-order').textContent   = t('match_order');
+  document.getElementById('opt-phrase').textContent  = t('match_phrase');
+  document.getElementById('opt-any').textContent     = t('match_any');
+  document.getElementById('opt-morph').textContent   = t('match_morph');
+  document.getElementById('morph-hint').textContent  = t('morph_hint');
+  document.getElementById('search-btn').textContent  = t('search_btn');
+  document.getElementById('ready-msg').textContent   = LANG === 'ar'
+    ? 'حدِّد النصوص وأدخل لفظاً لاستقرائه.'
+    : 'Ready. Select texts and enter a search term.';
+  document.getElementById('modal-close-btn').textContent = LANG === 'ar' ? 'إغلاق' : 'Close';
+  document.getElementById('tree-loading').textContent = t('loading');
+  // banner labels
+  document.getElementById('bn-texts-lbl').textContent  = LANG==='ar'?'النصوص':'Texts';
+  document.getElementById('bn-pairs-lbl').textContent  = LANG==='ar'?'أزواج الجمل':'Sentence Pairs';
+  document.getElementById('bn-tok-ar-lbl').textContent = LANG==='ar'?'الرموز العربية':'Arabic Tokens';
+  document.getElementById('bn-tok-en-lbl').textContent = LANG==='ar'?'الرموز الإنجليزية':'English Tokens';
+  document.getElementById('bn-cats-lbl').textContent   = LANG==='ar'?'الأبواب':'Categories';
+
+  // re-render tree with new language
+  if (catalogueData) renderTree(catalogueData);
+}
+
+/* ══ Corpus banner stats ══ */
+let catalogueData = null;
+
+async function initBanner() {
+  const cat = await RasaifEngine.loadCatalogue();
+  catalogueData = cat;
+  const texts = RasaifEngine.allTexts(cat);
+  document.getElementById('bn-texts').textContent = texts.length;
+  document.getElementById('bn-cats').textContent  = cat.categories.length;
+
+  // load all pairs for token counts
+  let pairs=0, tokAr=0, tokEn=0;
+  for (const tm of texts) {
+    const ps = await RasaifEngine.loadPair(tm);
+    pairs += ps.length;
+    for (const p of ps) {
+      tokAr += p.ar.split(/\s+/).filter(Boolean).length;
+      tokEn += p.en.split(/\s+/).filter(Boolean).length;
+    }
+  }
+  document.getElementById('bn-pairs').textContent  = pairs.toLocaleString();
+  document.getElementById('bn-tok-ar').textContent = tokAr.toLocaleString();
+  document.getElementById('bn-tok-en').textContent = tokEn.toLocaleString();
+
+  renderTree(cat);
+}
+
+/* ══ Sidebar tree ══ */
+function renderTree(cat) {
+  const tree = document.getElementById('text-tree');
+  tree.innerHTML = '';
+  for (const category of cat.categories) {
+    const grp = document.createElement('div');
+    grp.className = 'cat-group';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'cat-header';
+    hdr.innerHTML = `
+      <span class="cat-icon">▶</span>
+      <span class="cat-label">${LANG==='ar'?category.ar:category.en}</span>
+      <button class="cat-check-all" onclick="catSelectAll('${category.id}',true,event)">${LANG==='ar'?'تحديد':'All'}</button>
+    `;
+    hdr.onclick = (e) => { if(e.target.classList.contains('cat-check-all')) return; toggleCat(hdr, subDiv); };
+    grp.appendChild(hdr);
+
+    const subDiv = document.createElement('div');
+    subDiv.className = 'sub-group';
+    subDiv.style.display = 'none';
+
+    for (const sub of (category.subcategories||[])) {
+      if (!sub.texts || !sub.texts.length) continue;
+      const subHdr = document.createElement('div');
+      subHdr.className = 'sub-header';
+      subHdr.textContent = LANG==='ar' ? sub.ar : sub.en;
+      subDiv.appendChild(subHdr);
+
+      for (const txt of sub.texts) {
+        const item = document.createElement('div');
+        item.className = 'text-item';
+        item.innerHTML = `
+          <input type="checkbox" id="cb-${txt.id}" value="${txt.id}" checked>
+          <div>
+            <div class="text-item-label">${LANG==='ar'?txt.title_ar:txt.title_en}</div>
+            <div class="text-item-author">${LANG==='ar'?txt.author_ar:txt.author_en}</div>
+          </div>
+          <button class="text-item-info-btn" onclick="showTextInfo('${txt.id}',event)" title="Info">ⓘ</button>
+        `;
+        subDiv.appendChild(item);
+      }
+    }
+    grp.appendChild(subDiv);
+    tree.appendChild(grp);
+  }
+}
+
+function toggleCat(hdr, subDiv) {
+  const open = hdr.classList.toggle('open');
+  subDiv.style.display = open ? 'block' : 'none';
+}
+
+function catSelectAll(catId, val, e) {
+  e.stopPropagation();
+  const cat = catalogueData.categories.find(c=>c.id===catId);
+  if (!cat) return;
+  for (const sub of (cat.subcategories||[])) {
+    for (const txt of (sub.texts||[])) {
+      const cb = document.getElementById('cb-'+txt.id);
+      if (cb) cb.checked = val;
+    }
+  }
+}
+
+function selectAll(val) {
+  document.querySelectorAll('.text-item input[type=checkbox]').forEach(cb => cb.checked = val);
+}
+
+function getSelectedIds() {
+  const ids = new Set();
+  document.querySelectorAll('.text-item input[type=checkbox]:checked').forEach(cb => ids.add(cb.value));
+  return ids;
+}
+
+/* ══ Text info modal ══ */
+let textMetaMap = {};
+
+async function buildTextMetaMap() {
+  const cat = await RasaifEngine.loadCatalogue();
+  for (const category of cat.categories)
+    for (const sub of (category.subcategories||[]))
+      for (const txt of (sub.texts||[]))
+        textMetaMap[txt.id] = txt;
+}
+
+function showTextInfo(id, e) {
+  e.stopPropagation();
+  const txt = textMetaMap[id];
+  if (!txt) return;
+  document.getElementById('modal-title').textContent = LANG==='ar' ? txt.title_ar : txt.title_en;
+  const rows = [
+    [t('author_label'), LANG==='ar'?txt.author_ar:txt.author_en],
+    [t('date_label'),   txt.date],
+    [t('source_label')+' (AR)', txt.source_ar],
+    [t('source_label')+' (EN)', txt.source_en],
+  ];
+  document.getElementById('modal-body').innerHTML = rows.map(([k,v])=>`
+    <div class="modal-row">
+      <span class="modal-key">${k}</span>
+      <span class="modal-val">${v||'—'}</span>
+    </div>`).join('');
+  document.getElementById('info-modal').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (!e || e.target.id === 'info-modal' || e.target.id === 'modal-close-btn') {
+    document.getElementById('info-modal').style.display = 'none';
+  }
+}
+
+/* ══ Search ══ */
+let lastResults = [], lastMode = 'parallel', lastQuery = '';
+
+async function doSearch() {
+  const query = document.getElementById('query-input').value.trim();
+  if (!query) return;
+  lastQuery = query;
+
+  const lang   = document.querySelector('input[name=lang]:checked').value;
+  const output = document.querySelector('input[name=output]:checked').value;
+  const match  = document.querySelector('input[name=match]:checked').value;
+  const excl   = document.getElementById('excl-input').value.trim();
+  const selIds = getSelectedIds();
+  lastMode = output;
+
+  const area = document.getElementById('results-area');
+  area.innerHTML = `<div class="status-msg"><span class="spinner"></span> ${t('loading')}</div>`;
+
+  const results = await RasaifEngine.search({
+    query, lang, mode: match, exclude: excl,
+    textIds: selIds.size ? selIds : null
+  });
+  lastResults = results;
+
+  if (!results.length) {
+    area.innerHTML = `<div class="status-msg">${t('no_results')}</div>`;
+    return;
+  }
+
+  const toolbar = `
+    <div class="results-toolbar">
+      <span class="results-count">${t('results_found', results.length)}</span>
+      <div class="toolbar-btns">
+        <button class="export-btn" onclick="exportResults()">${t('export_btn')}</button>
+      </div>
+    </div>`;
+
+  if (output === 'parallel') {
+    area.innerHTML = toolbar + renderParallel(results, lang);
+  } else {
+    const lines = RasaifEngine.makeConcordance(results, query, lang);
+    area.innerHTML = toolbar + renderKWIC(lines);
+  }
+}
+
+function renderParallel(results, lang) {
+  const showAr = lang !== 'en';
+  const showEn = lang !== 'ar';
+  let html = `<table class="parallel-table">
+    <thead><tr>
+      ${showAr ? `<th>Arabic</th>` : ''}
+      <th style="width:30px"></th>
+      ${showEn ? `<th>English</th>` : ''}
+      <th>Source</th>
+    </tr></thead><tbody>`;
+  for (const r of results) {
+    html += `<tr>
+      ${showAr ? `<td class="col-ar arabic-text">${r.highlightAr||r.ar}</td>` : ''}
+      <td style="text-align:center;width:30px;vertical-align:middle">
+        <span class="align-indicator" title="Parallel sentence pair"></span>
+      </td>
+      ${showEn ? `<td class="col-en english-text">${r.highlightEn||r.en}</td>` : ''}
+      <td class="col-meta">
+        <span class="meta-title">${LANG==='ar'?r.title_ar:r.title_en}</span>
+        <span class="meta-author">${LANG==='ar'?r.author_ar:r.author_en}</span>
+      </td>
+    </tr>`;
+  }
+  return html + '</tbody></table>';
+}
+
+function renderKWIC(lines) {
+  if (!lines.length) return `<div class="status-msg">${t('no_results')}</div>`;
+  let html = `<table class="kwic-table">
+    <thead><tr>
+      <th style="text-align:right">Left</th>
+      <th>Keyword</th>
+      <th>Right</th>
+      <th>Source</th>
+    </tr></thead><tbody>`;
+  for (const l of lines) {
+    const isAr = l.lang === 'ar';
+    html += `<tr>
+      <td class="kwic-pre ${isAr?'arabic-text':''}">${l.pre}</td>
+      <td class="kwic-kw"><span class="kwic-lang-badge ${l.lang}">${l.lang.toUpperCase()}</span><br>${l.kw}</td>
+      <td class="kwic-post ${isAr?'arabic-text':''}">${l.post}</td>
+      <td class="kwic-meta">${isAr?l.title_ar:l.title_en}<br><em>${isAr?l.author_ar:l.author_en}</em></td>
+    </tr>`;
+  }
+  return html + '</tbody></table>';
+}
+
+function exportResults() {
+  if (!lastResults.length) return;
+  const csv = RasaifEngine.exportCSV(lastResults);
+  RasaifEngine.downloadCSV(csv, `rasaif-results-${lastQuery.slice(0,20)}.csv`);
+}
+
+/* ══ Init ══ */
+setLang(LANG);
+applyI18n();
+initBanner();
+buildTextMetaMap();
+</script>
+</body>
+</html>

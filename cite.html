@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raṣāʾif — How to Cite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="page-wrap header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name" id="hd-name">Raṣāʾif</span>
+      <span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"    class="nav-link" id="nav-search">Search</a>
+      <a href="analysis.html" class="nav-link" id="nav-analysis">Analysis</a>
+      <a href="about.html"    class="nav-link" id="nav-about">About</a>
+      <a href="cite.html"     class="nav-link active" id="nav-cite">Cite</a>
+      <button class="nav-lang-btn" id="lang-toggle" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="about-layout">
+  <div class="ornament">◈ · ◈ · ◈</div>
+
+  <h1 id="cite-h1">How to Cite</h1>
+
+  <div id="cite-en">
+    <p>If you use the Raṣāʾif corpus in research, teaching, or any published work, please cite it as follows.</p>
+
+    <h2>APA (7th edition)</h2>
+    <div class="cite-box">
+      Al-Ghamdi, A. H. S. (2024). <em>Raṣāʾif: An Arabic–English parallel corpus of classical scholarly and literary texts</em> [Online corpus]. Retrieved from https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <h2>MLA (9th edition)</h2>
+    <div class="cite-box">
+      Al-Ghamdi, Ahmed H. S. <em>Raṣāʾif: An Arabic–English Parallel Corpus of Classical Scholarly and Literary Texts</em>. 2024, ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/.
+    </div>
+
+    <h2>Chicago (17th edition)</h2>
+    <div class="cite-box">
+      Al-Ghamdi, Ahmed H. S. <em>Raṣāʾif: An Arabic–English Parallel Corpus of Classical Scholarly and Literary Texts</em>. Online corpus, 2024. https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/.
+    </div>
+
+    <h2>BibTeX</h2>
+    <div class="cite-box" style="font-family:var(--mono);font-size:.82rem;white-space:pre-wrap">@misc{alghamdi2024rasaif,
+  author    = {Al-Ghamdi, Ahmed H. S.},
+  title     = {{Raṣāʾif}: An {Arabic}--{English} Parallel Corpus
+               of Classical Scholarly and Literary Texts},
+  year      = {2024},
+  url       = {https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/},
+  note      = {Online corpus}
+}</div>
+
+    <h2>Citing individual texts</h2>
+    <p>When citing a specific text within the corpus, also cite the original edition and translation used. Provenance details for each text are available on the <a href="about.html" style="color:var(--gold)">About</a> page.</p>
+
+    <h2>License</h2>
+    <p>The corpus software and interface are released under the <span class="license-badge">MIT License</span>. The underlying texts and translations remain subject to their own copyright; the corpus does not claim any rights over them. Users are responsible for ensuring that their use of any text complies with applicable copyright law.</p>
+    <p>The data files (corpus text) are made available for non-commercial research and educational use.</p>
+  </div>
+
+  <div id="cite-ar" style="display:none;direction:rtl;text-align:right">
+    <p>إن استفدتَ من ذخيرة الرصائف في بحثٍ أو تدريسٍ أو أيّ عمل منشور، فنرجو الاستشهاد بها على النحو الآتي:</p>
+
+    <h2>صيغة APA</h2>
+    <div class="cite-box" style="direction:ltr;text-align:left">
+      Al-Ghamdi, A. H. S. (2024). <em>Raṣāʾif: An Arabic–English parallel corpus of classical scholarly and literary texts</em> [Online corpus]. Retrieved from https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/
+    </div>
+
+    <h2>صيغة BibTeX</h2>
+    <div class="cite-box" style="font-family:var(--mono);font-size:.82rem;white-space:pre-wrap;direction:ltr;text-align:left">@misc{alghamdi2024rasaif,
+  author    = {Al-Ghamdi, Ahmed H. S.},
+  title     = {{Raṣāʾif}: An {Arabic}--{English} Parallel Corpus
+               of Classical Scholarly and Literary Texts},
+  year      = {2024},
+  url       = {https://ahmedhsalghamdi.github.io/arabic-english-rasaif-corpus/},
+  note      = {Online corpus}
+}</div>
+
+    <h2>الرخصة</h2>
+    <p>يُوزَّع برنامج الذخيرة وواجهتها بموجب <span class="license-badge">رخصة MIT</span>. وتظلّ النصوص والترجمات المضمَّنة فيها خاضعةً لحقوق أصحابها، ولا تدّعي الذخيرة أيّ حقٍّ عليها. ويتحمّل المستخدم مسؤوليةَ التثبّت من مطابقة استخدامه لأحكام قانون حقوق النشر المعمول به.</p>
+    <p>تُتاح ملفات النصوص للاستخدام البحثي والتعليمي غير التجاري.</p>
+  </div>
+
+  <div class="ornament" style="margin-top:3rem">◈ · ◈ · ◈</div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+function toggleLang() {
+  setLang(LANG === 'en' ? 'ar' : 'en');
+  applyI18n();
+}
+function applyI18n() {
+  document.getElementById('hd-name').textContent     = t('site_name');
+  document.getElementById('hd-tag').textContent      = t('site_subtitle');
+  document.getElementById('nav-search').textContent   = t('nav_search');
+  document.getElementById('nav-analysis').textContent = t('nav_analysis');
+  document.getElementById('nav-about').textContent    = t('nav_about');
+  document.getElementById('nav-cite').textContent     = t('nav_cite');
+  document.getElementById('lang-toggle').textContent  = t('toggle_lang');
+  document.getElementById('cite-h1').textContent     = t('cite_heading');
+  document.getElementById('cite-en').style.display   = LANG === 'en' ? 'block' : 'none';
+  document.getElementById('cite-ar').style.display   = LANG === 'ar' ? 'block' : 'none';
+}
+setLang(LANG);
+applyI18n();
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+{
+  "categories": [
+    {
+      "id": "scholarly",
+      "en": "Scholarly Works",
+      "ar": "الرصائف العلمية",
+      "icon": "◈",
+      "subcategories": [
+        {
+          "id": "jurisprudence",
+          "en": "Jurisprudence & Legal Theory",
+          "ar": "الفقه والأصول",
+          "texts": [
+            {
+              "id": "sch-jur-001",
+              "title_ar": "الموطأ — الطهارة",
+              "title_en": "Al-Muwaṭṭaʾ — On Purity",
+              "author_ar": "مالك بن أنس",
+              "author_en": "Mālik ibn Anas",
+              "date": "c. 179 AH / 795 CE",
+              "source_ar": "الموطأ، رواية يحيى الليثي، دار إحياء التراث العربي",
+              "source_en": "Al-Muwaṭṭaʾ, trans. Aisha Bewley (Diwan Press, 2004)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/scholarly/jurisprudence/muwatta_ar.txt",
+              "file_en": "corpus/scholarly/jurisprudence/muwatta_en.txt"
+            }
+          ]
+        },
+        {
+          "id": "medicine",
+          "en": "Medicine & Natural Sciences",
+          "ar": "الطب والعلوم الطبيعية",
+          "texts": [
+            {
+              "id": "sch-med-001",
+              "title_ar": "القانون في الطب — المقدمة",
+              "title_en": "The Canon of Medicine — Proem",
+              "author_ar": "ابن سينا",
+              "author_en": "Ibn Sīnā (Avicenna)",
+              "date": "c. 1025 CE",
+              "source_ar": "القانون في الطب، دار صادر، بيروت",
+              "source_en": "Canon of Medicine, trans. O. Cameron Gruner (Luzac, 1930)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/scholarly/medicine/canon_ar.txt",
+              "file_en": "corpus/scholarly/medicine/canon_en.txt"
+            }
+          ]
+        },
+        {
+          "id": "biographies",
+          "en": "Biographies & Ṭabaqāt",
+          "ar": "التراجم والطبقات",
+          "texts": [
+            {
+              "id": "sch-bio-001",
+              "title_ar": "الطبقات الكبرى — طبقة الصحابة",
+              "title_en": "The Great Generations — The Companions",
+              "author_ar": "ابن سعد",
+              "author_en": "Ibn Saʿd",
+              "date": "c. 230 AH / 845 CE",
+              "source_ar": "الطبقات الكبرى، تحقيق إحسان عباس، دار صادر",
+              "source_en": "The Men of Madina, trans. Aisha Bewley (Ta-Ha, 1997)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/scholarly/biographies/tabaqat_ar.txt",
+              "file_en": "corpus/scholarly/biographies/tabaqat_en.txt"
+            }
+          ]
+        },
+        {
+          "id": "general",
+          "en": "General Scholarship",
+          "ar": "العلوم العامة",
+          "texts": []
+        }
+      ]
+    },
+    {
+      "id": "literary",
+      "en": "Literary Works",
+      "ar": "الرصائف الأدبية",
+      "icon": "◇",
+      "subcategories": [
+        {
+          "id": "prose",
+          "en": "Artistic Prose",
+          "ar": "النثر الفني",
+          "texts": [
+            {
+              "id": "lit-pro-001",
+              "title_ar": "البيان والتبيين — المقدمة",
+              "title_en": "The Book of Clarity — Preface",
+              "author_ar": "الجاحظ",
+              "author_en": "Al-Jāḥiẓ",
+              "date": "c. 255 AH / 869 CE",
+              "source_ar": "البيان والتبيين، تحقيق عبد السلام هارون، مكتبة الخانجي",
+              "source_en": "Selections, trans. Charles Pellat (1969)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/literary/prose/bayan_ar.txt",
+              "file_en": "corpus/literary/prose/bayan_en.txt"
+            },
+            {
+              "id": "lit-pro-002",
+              "title_ar": "كليلة ودمنة — باب الأسد والثور",
+              "title_en": "Kalīla wa-Dimna — The Lion and the Bull",
+              "author_ar": "ابن المقفع",
+              "author_en": "Ibn al-Muqaffaʿ",
+              "date": "c. 139 AH / 756 CE",
+              "source_ar": "كليلة ودمنة، تحقيق لويس شيخو، المطبعة الكاثوليكية",
+              "source_en": "Kalilah and Dimnah, trans. W.H. Morley (1854)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/literary/prose/kalila_ar.txt",
+              "file_en": "corpus/literary/prose/kalila_en.txt"
+            }
+          ]
+        },
+        {
+          "id": "maqamat",
+          "en": "Maqāmāt",
+          "ar": "المقامات",
+          "texts": [
+            {
+              "id": "lit-maq-001",
+              "title_ar": "مقامات الحريري — المقامة البصرية",
+              "title_en": "Al-Ḥarīrī's Maqāmāt — The Basra Assembly",
+              "author_ar": "الحريري",
+              "author_en": "Al-Ḥarīrī",
+              "date": "c. 516 AH / 1122 CE",
+              "source_ar": "مقامات الحريري، دار بيروت للطباعة والنشر",
+              "source_en": "The Assemblies of Al Hariri, trans. Thomas Chenery (1867)",
+              "tokens_ar": 0,
+              "tokens_en": 0,
+              "file_ar": "corpus/literary/maqamat/hariri_ar.txt",
+              "file_en": "corpus/literary/maqamat/hariri_en.txt"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
