@@ -226,25 +226,38 @@ const RasaifEngine = (() => {
   }
 
   /* ── Data loading ── */
-  async function loadBooks(onProgress) {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/?ref=${BRANCH}`);
-    const items = await r.json();
-    if (!Array.isArray(items)) throw new Error('Could not read repository.');
-    const csvs = items.filter(f => f.name.toLowerCase().endsWith('.csv'));
-    if (!csvs.length) throw new Error('No CSV files found in repository root.');
-    books = [];
-    for (const f of csvs) {
-      if (onProgress) onProgress(f.name);
-      const pr = await fetch(f.download_url);
-      const text = await pr.text();
-      const pairs = parseCSV(text);
-      books.push({ name: f.name.replace(/\.csv$/i,''), pairs, checked: true });
-    }
+async function loadBooks(onProgress) {
+    const WORKER_URL = 'https://rasaif-search.ahmed-hs-alghamdi.workers.dev';
+    
+    // Fetch list of books from Typesense
+    const r = await fetch(`${WORKER_URL}?q=*&per_page=0&facet_by=source`);
+    const data = await r.json();
+    
+    // Get unique book names from facets
+    const sources = data.facet_counts?.[0]?.counts?.map(c => c.value) || [];
+    
+    books = sources.map(name => ({
+      name,
+      pairs: [],
+      checked: true
+    }));
+    
+    if (onProgress) onProgress('Connected to search database…');
     rebuild(true);
     return books;
   }
 
-  function rebuild(useMorpho) {
+  async function searchRemote({ query, lang, page }) {
+    const WORKER_URL = 'https://rasaif-search.ahmed-hs-alghamdi.workers.dev';
+    const params = new URLSearchParams({
+      q: query || '*',
+      lang: lang || 'both',
+      page: page || '1'
+    });
+    const r = await fetch(`${WORKER_URL}?${params}`);
+    if (r.status === 429) throw new Error('Too many searches — please wait a moment.');
+    return r.json();
+  }
     bookIndices = books.map(b => buildIndex(b, useMorpho));
   }
 
