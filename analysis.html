@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Raṣāʾif — Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+.an-wrap { max-width: 900px; margin: 0 auto; padding: 28px 22px 80px; }
+.an-title { font-size: 1.1rem; font-weight: normal; color: var(--ink); margin-bottom: 1.5rem; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+body.rtl .an-title { font-family: var(--arabic); font-size: 1.3rem; }
+
+/* Tabs */
+.tab-bar { display: flex; border-bottom: 1px solid var(--rule-strong); margin-bottom: 20px; flex-wrap: wrap; }
+.tab { font-family: var(--serif); font-size: 12px; padding: 5px 14px; border: none;
+  border-bottom: 2px solid transparent; background: none; cursor: pointer; color: var(--ink-soft); white-space: nowrap; }
+body.rtl .tab { font-family: var(--arabic); font-size: 14px; }
+.tab.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: bold; }
+.tab:hover:not(.active) { color: var(--ink-mid); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Stats grid */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.stat-box { border: 1px solid var(--rule-strong); padding: 12px 14px; background: var(--paper-2); border-radius: var(--r); }
+.stat-val { font-size: 1.6rem; font-weight: normal; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.stat-lbl { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+body.rtl .stat-lbl { font-family: var(--arabic); text-transform: none; font-size: 12px; letter-spacing: 0; }
+.stat-sub { font-size: 9px; color: var(--ink-faint); margin-top: 2px; }
+
+/* Tables */
+.an-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: .75rem 0 1.5rem; }
+.an-table thead th { text-align: left; font-size: 10px; font-weight: bold; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink-soft); background: var(--paper-2);
+  border-bottom: 2px solid var(--rule-strong); padding: 6px 9px; }
+body.rtl .an-table thead th { font-family: var(--arabic); text-transform: none; letter-spacing: 0; font-size: 12px; text-align: right; }
+.an-table tbody tr { border-bottom: 1px solid var(--rule); }
+.an-table tbody tr:hover { background: var(--paper-3); }
+.an-table td { padding: 5px 9px; vertical-align: middle; }
+.td-r { text-align: right; font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+.td-ar-w { font-family: var(--arabic); font-size: 15px; direction: rtl; text-align: right; }
+.bar-cell { width: 100px; padding: 5px 9px; }
+.bar { height: 6px; background: var(--ink-mid); display: inline-block; min-width: 2px; border-radius: 1px; }
+
+/* Book filter */
+.book-sel { padding: 4px 8px; font-family: var(--serif); font-size: 12px;
+  border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink);
+  border-radius: var(--r); cursor: pointer; outline: none; margin-bottom: 1rem; }
+body.rtl .book-sel { font-family: var(--arabic); font-size: 14px; }
+
+/* Note */
+.an-note { font-size: 11px; color: var(--ink-faint); font-style: italic; margin-bottom: 10px; line-height: 1.6; }
+body.rtl .an-note { font-family: var(--arabic); font-size: 13px; font-style: normal; }
+
+/* Section heading */
+.an-sec { font-size: 10px; font-weight: bold; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-mid); border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin: 1.5rem 0 .75rem; }
+body.rtl .an-sec { font-family: var(--arabic); text-transform: none; letter-spacing: 0; font-size: 13px; }
+
+.spinner-wrap { text-align:center; padding: 40px; color: var(--ink-faint); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name" id="hd-name">Raṣāʾif</span>
+      <span class="site-tagline" id="hd-tag">Arabic–English Parallel Corpus</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"     class="nav-link"        id="nav-s">Search</a>
+      <a href="analysis.html"  class="nav-link active" id="nav-a">Analysis</a>
+      <a href="lataif.html"    class="nav-link"        id="nav-l">Lāṭāʾif</a>
+      <a href="about.html"     class="nav-link"        id="nav-b">About</a>
+      <a href="cite.html"      class="nav-link"        id="nav-c">Cite</a>
+      <a href="aranjiyya.html" class="nav-link"        id="nav-e">al-ʿAranijiyya</a>
+      <button class="nav-lang-btn" id="lang-btn" onclick="toggleLang()">العربية</button>
+    </nav>
+  </div>
+</header>
+
+<div class="an-wrap">
+
+  <!-- Book selector -->
+  <select class="book-sel" id="book-sel" onchange="loadAnalysis()">
+    <option value="all">All texts (combined)</option>
+  </select>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="showTab('overview')"  id="tab-overview">Overview</button>
+    <button class="tab"        onclick="showTab('corpus')"    id="tab-corpus">Corpus</button>
+    <button class="tab"        onclick="showTab('chrono')"    id="tab-chrono">Chronology</button>
+    <button class="tab"        onclick="showTab('download')"  id="tab-download">Download</button>
+  </div>
+
+  <div id="an-content">
+    <div class="spinner-wrap"><span class="spinner"></span> Loading…</div>
+  </div>
+
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/engine.js"></script>
+<script>
+const WORKER = 'https://rasaif-search.ahmed-hs-alghamdi.workers.dev';
+let currentTab = 'overview';
+let corpusStats = null; // cached
+
+function toggleLang() { setLang(LANG==='en'?'ar':'en'); applyI18n(); }
+
+function applyI18n() {
+  const ar = LANG==='ar';
+  document.getElementById('hd-name').textContent  = t('site_name');
+  document.getElementById('hd-tag').textContent   = t('site_subtitle');
+  document.getElementById('nav-s').textContent    = t('nav_search');
+  document.getElementById('nav-a').textContent    = t('nav_analysis');
+  document.getElementById('nav-b').textContent    = t('nav_about');
+  document.getElementById('nav-c').textContent    = t('nav_cite');
+  document.getElementById('nav-e').textContent    = t('nav_aranjiyya');
+  document.getElementById('lang-btn').textContent = t('toggle_lang');
+
+  // Tab labels
+  document.getElementById('tab-overview').textContent  = ar ? 'نظرة عامة'   : 'Overview';
+  document.getElementById('tab-corpus').textContent    = ar ? 'الكتب'        : 'Corpus';
+  document.getElementById('tab-chrono').textContent    = ar ? 'التسلسل الزمني' : 'Chronology';
+  document.getElementById('tab-download').textContent  = ar ? 'التنزيل'      : 'Download';
+
+  loadAnalysis();
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  loadAnalysis();
+}
+
+/* ── Fetch corpus stats from Typesense ── */
+async function fetchCorpusStats(filterBook) {
+  const url = new URL(WORKER);
+  url.searchParams.set('q', '*');
+  url.searchParams.set('per_page', '0');
+  url.searchParams.set('facet_by', 'source');
+  if (filterBook && filterBook !== 'all') {
+    url.searchParams.set('filter_by', `source:[\`${filterBook}\`]`);
+  }
+  const r = await fetch(url.toString());
+  return r.json();
+}
+
+/* ── Book metadata hardcoded for analysis ── */
+const BOOKS_META = [
+  { key: 'Risala - Al-Shafii',                       title_en: 'The Epistle',               title_ar: 'الرسالة',              author_en: 'Al-Shāfiʿī',         death_ah: 204,  genre_en: 'Legal theory',       genre_ar: 'أصول الفقه' },
+  { key: 'Al-Asnam - Ibn al-Kalbi',                  title_en: 'The Book of Idols',          title_ar: 'كتاب الأصنام',         author_en: 'Ibn al-Kalbī',       death_ah: 204,  genre_en: 'History',            genre_ar: 'تاريخ' },
+  { key: 'Al-Amwal - Ibn Sallam',                    title_en: 'The Book of Revenue',        title_ar: 'كتاب الأموال',         author_en: 'Ibn Sallām',         death_ah: 224,  genre_en: 'Finance & law',      genre_ar: 'الفقه المالي' },
+  { key: 'Al-Bukhala - Al-Jahiz',                    title_en: 'The Book of Misers',         title_ar: 'البخلاء',              author_en: 'Al-Jāḥiẓ',          death_ah: 255,  genre_en: 'Adab',               genre_ar: 'أدب' },
+  { key: 'The Excellence of the Arabs - Ibn Qutaybah', title_en: 'The Excellence of the Arabs', title_ar: 'فضل العرب',         author_en: 'Ibn Qutayba',        death_ah: 276,  genre_en: 'Philology',          genre_ar: 'فقه اللغة' },
+  { key: 'Al-Iqd al-Farid - Ibn Abd Rabbih',         title_en: 'The Unique Necklace',        title_ar: 'العقد الفريد',         author_en: 'Ibn ʿAbd Rabbih',    death_ah: 328,  genre_en: 'Adab anthology',     genre_ar: 'أدب وموسوعة' },
+  { key: 'Akhbar Abi Tammam - Al-Suli',              title_en: 'Life of Abū Tammām',         title_ar: 'أخبار أبي تمام',       author_en: 'Al-Ṣūlī',           death_ah: 335,  genre_en: 'Biography',          genre_ar: 'تراجم' },
+  { key: 'Adab al-Ghuraba - Al-Isfahani',            title_en: 'The Manners of Strangers',   title_ar: 'أدب الغرباء',          author_en: 'Al-Iṣfahānī',        death_ah: 356,  genre_en: 'Adab',               genre_ar: 'أدب' },
+  { key: 'Nishwar al-Muhadara - al-Tanukhi',         title_en: 'Table-Talk of a Judge',      title_ar: 'نشوار المحاضرة',       author_en: 'Al-Tanūkhī',         death_ah: 384,  genre_en: 'Anecdotes',          genre_ar: 'أخبار وطرائف' },
+  { key: 'Tasrif - Al-Zahrawi',                      title_en: 'Method of Medicine',         title_ar: 'التصريف',              author_en: 'Al-Zahrāwī',         death_ah: 404,  genre_en: 'Medicine',           genre_ar: 'طب' },
+  { key: 'Nahj al-Balagha - ash-Sharif ar-Radi',     title_en: 'Peak of Eloquence',          title_ar: 'نهج البلاغة',          author_en: 'Comp. al-Sharīf al-Raḍī', death_ah: 406, genre_en: 'Rhetoric',      genre_ar: 'بلاغة' },
+  { key: 'Canon - Ibn Sina',                         title_en: 'The Canon of Medicine',      title_ar: 'القانون في الطب',      author_en: 'Ibn Sīnā',           death_ah: 428,  genre_en: 'Medicine',           genre_ar: 'طب' },
+  { key: 'Al-Farq bayn al-Firaq - Al-Baghdadi',      title_en: 'Muslim Schisms and Sects',   title_ar: 'الفرق بين الفرق',      author_en: 'Al-Baghdādī',        death_ah: 429,  genre_en: 'Theology',           genre_ar: 'علم الكلام' },
+  { key: 'Optics - Ibn al-Haytham',                  title_en: 'Book of Optics',             title_ar: 'كتاب المناظر',         author_en: 'Ibn al-Haytham',     death_ah: 430,  genre_en: 'Science',            genre_ar: 'علوم' },
+  { key: 'Al-Akhlaq wa al-Siyar - Ibn Hazm',         title_en: 'Morals and Behaviour',       title_ar: 'الأخلاق والسير',       author_en: 'Ibn Ḥazm',           death_ah: 456,  genre_en: 'Ethics',             genre_ar: 'أخلاق' },
+  { key: 'Tawq al-Hamama - Ibn Hazm',                title_en: 'The Ring of the Dove',       title_ar: 'طوق الحمامة',          author_en: 'Ibn Ḥazm',           death_ah: 456,  genre_en: 'Belles-lettres',     genre_ar: 'أدب' },
+  { key: 'Hayy ibn Yaqzan - Ibn Tufayl',             title_en: 'Ḥayy ibn Yaqẓān',           title_ar: 'حي بن يقظان',          author_en: 'Ibn Ṭufayl',         death_ah: 581,  genre_en: 'Philosophical tale', genre_ar: 'فلسفة' },
+  { key: 'Al-Itibar - Ibn Munqidh',                  title_en: 'The Book of Contemplation',  title_ar: 'كتاب الاعتبار',        author_en: 'Usāma ibn Munqidh', death_ah: 584,  genre_en: 'Memoir',             genre_ar: 'مذكرات' },
+  { key: 'Al-Nawadir al-Sultaniyya - Ibn Shaddad',   title_en: 'Rare History of Saladin',    title_ar: 'النوادر السلطانية',    author_en: 'Ibn Shaddād',        death_ah: 632,  genre_en: 'Biography',          genre_ar: 'تراجم' },
+  { key: 'Wafayat al-Ayan - Ibn Khallikan',          title_en: 'Deaths of Eminent Men',      title_ar: 'وفيات الأعيان',        author_en: 'Ibn Khallikān',      death_ah: 681,  genre_en: 'Biography',          genre_ar: 'تراجم' },
+  { key: 'Tafrij al-Kurub - Ibn Abi al-Rabi',        title_en: 'A Muslim Manual of War',     title_ar: 'تفريج الكروب',         author_en: 'Ibn Abī al-Rabīʿ',  death_ah: 688,  genre_en: 'Military science',   genre_ar: 'فن الحرب' },
+  { key: 'Al-Futuwwa - Al-Sulami',                   title_en: 'Book of Sufi Chivalry',      title_ar: 'كتاب الفتوة',          author_en: 'Al-Sulamī',          death_ah: 412,  genre_en: 'Sufism',             genre_ar: 'تصوف' },
+  { key: 'Rihla - Ibn Battuta',                      title_en: 'The Travels',                title_ar: 'رحلة ابن بطوطة',       author_en: 'Ibn Baṭṭūṭa',       death_ah: 779,  genre_en: 'Travel',             genre_ar: 'رحلة' },
+  { key: 'Muqaddima - Ibn Khaldun',                  title_en: 'The Muqaddimah',             title_ar: 'المقدمة',              author_en: 'Ibn Khaldūn',        death_ah: 808,  genre_en: 'Philosophy of history', genre_ar: 'فلسفة التاريخ' },
+  { key: 'Futuh ash-Sham - Pseudo-Waqidi',           title_en: 'The Conquests of Syria',     title_ar: 'فتوح الشام',           author_en: 'Pseudo-Wāqidī',      death_ah: 9999, genre_en: 'History',            genre_ar: 'تاريخ' },
+];
+
+const GENRE_COLORS = {
+  'Adab': '#8a6d2f', 'Medicine': '#2e7d32', 'History': '#1565c0',
+  'Biography': '#6a1b9a', 'Science': '#00695c', 'Sufism': '#ad1457',
+  'Legal theory': '#bf360c', 'Finance & law': '#bf360c', 'Theology': '#37474f',
+  'Philosophy of history': '#4527a0', 'Travel': '#00838f', 'Military science': '#558b2f',
+  'Rhetoric': '#f57f17', 'Ethics': '#4e342e', 'Philology': '#1b5e20',
+  'Belles-lettres': '#8a6d2f', 'Memoir': '#0d47a1', 'Philosophical tale': '#4527a0',
+  'Adab anthology': '#8a6d2f', 'Anecdotes': '#e65100',
+};
+
+/* ── Populate book selector ── */
+async function init() {
+  setLang(LANG); applyI18n();
+  const sel = document.getElementById('book-sel');
+  const ar = LANG === 'ar';
+  BOOKS_META.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.key;
+    opt.textContent = ar ? b.title_ar : b.title_en;
+    sel.appendChild(opt);
+  });
+  await loadAnalysis();
+}
+
+async function loadAnalysis() {
+  const book = document.getElementById('book-sel').value;
+  const ar = LANG === 'ar';
+  const el = document.getElementById('an-content');
+  el.innerHTML = `<div class="spinner-wrap"><span class="spinner"></span> ${ar?'ريثما تُجلى…':'Loading…'}</div>`;
+
+  let data;
+  try {
+    data = await fetchCorpusStats(book);
+  } catch(e) {
+    el.innerHTML = `<div class="spinner-wrap">${e.message}</div>`;
+    return;
+  }
+
+  const total  = data.found || 0;
+  const facets = (data.facet_counts?.[0]?.counts || [])
+    .sort((a,b) => {
+      const ma = BOOKS_META.find(x=>x.key===a.value);
+      const mb = BOOKS_META.find(x=>x.key===b.value);
+      return (ma?.death_ah||9999) - (mb?.death_ah||9999);
+    });
+
+  switch (currentTab) {
+    case 'overview':  el.innerHTML = renderOverview(total, facets, book, ar); break;
+    case 'corpus':    el.innerHTML = renderCorpus(facets, ar); break;
+    case 'chrono':    el.innerHTML = renderChrono(facets, ar); break;
+    case 'download':  el.innerHTML = renderDownload(ar); break;
+  }
+}
+
+/* ── Overview tab ── */
+function renderOverview(total, facets, book, ar) {
+  const bookMeta = book !== 'all' ? BOOKS_META.find(b=>b.key===book) : null;
+  const title = bookMeta ? (ar ? bookMeta.title_ar : bookMeta.title_en) : (ar ? 'جميع الكتب' : 'All texts');
+  const genres = [...new Set(BOOKS_META.map(b=>b.genre_en))];
+  const genreCounts = {};
+  facets.forEach(f => {
+    const m = BOOKS_META.find(b=>b.key===f.value);
+    if (m) genreCounts[m.genre_en] = (genreCounts[m.genre_en]||0) + f.count;
+  });
+
+  let h = `<h2 class="an-title">${esc(title)}</h2>`;
+
+  // Key stats
+  h += `<div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-val">${total.toLocaleString()}</div>
+      <div class="stat-lbl">${ar?'أزواجُ الجمل':'Sentence Pairs'}</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">${book==='all' ? facets.length : 1}</div>
+      <div class="stat-lbl">${ar?'الكُتُب':'Texts'}</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">2nd–8th</div>
+      <div class="stat-lbl">${ar?'قرون هجرية':'Centuries AH'}</div>
+      <div class="stat-sub">${ar?'204–808 هـ':'204–808 AH'}</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">${Object.keys(genreCounts).length}</div>
+      <div class="stat-lbl">${ar?'أبوابُ المعرفة':'Disciplines'}</div>
+    </div>
+  </div>`;
+
+  // Genre breakdown
+  if (book === 'all') {
+    h += `<div class="an-sec">${ar?'توزيعُ الكتب على أبواب المعرفة':'Distribution by Discipline'}</div>`;
+    h += `<table class="an-table"><thead><tr>
+      <th>${ar?'الباب':'Discipline'}</th>
+      <th class="td-r">${ar?'أزواجُ الجمل':'Pairs'}</th>
+      <th class="td-r">%</th>
+      <th class="bar-cell"></th>
+    </tr></thead><tbody>`;
+    const sorted = Object.entries(genreCounts).sort((a,b)=>b[1]-a[1]);
+    const maxG = sorted[0]?.[1] || 1;
+    sorted.forEach(([genre, count]) => {
+      const pct = ((count/total)*100).toFixed(1);
+      const bw = Math.round((count/maxG)*90);
+      const arGenre = BOOKS_META.find(b=>b.genre_en===genre)?.genre_ar || genre;
+      h += `<tr>
+        <td>${ar ? arGenre : genre}</td>
+        <td class="td-r">${count.toLocaleString()}</td>
+        <td class="td-r">${pct}%</td>
+        <td class="bar-cell"><span class="bar" style="width:${bw}px;background:${GENRE_COLORS[genre]||'var(--ink-mid)'}"></span></td>
+      </tr>`;
+    });
+    h += `</tbody></table>`;
+  }
+
+  // About this text (if single book selected)
+  if (bookMeta) {
+    h += `<div class="an-sec">${ar?'خبرُ هذا الكتاب':'About this text'}</div>`;
+    h += `<table class="an-table"><tbody>
+      <tr><td style="width:140px;color:var(--ink-faint);font-size:11px">${ar?'المؤلف':'Author'}</td>
+          <td class="${ar?'td-ar-w':''}">${ar?(BOOKS_META.find(b=>b.key===bookMeta.key)?.author_en||''):bookMeta.author_en}</td></tr>
+      <tr><td style="color:var(--ink-faint);font-size:11px">${ar?'الوفاة':'Death'}</td>
+          <td>${bookMeta.death_ah < 9000 ? (ar?`${bookMeta.death_ah} هـ`:`${bookMeta.death_ah} AH`) : (ar?'مجهول':'Unknown')}</td></tr>
+      <tr><td style="color:var(--ink-faint);font-size:11px">${ar?'الباب':'Genre'}</td>
+          <td>${ar?bookMeta.genre_ar:bookMeta.genre_en}</td></tr>
+      <tr><td style="color:var(--ink-faint);font-size:11px">${ar?'أزواجُ الجمل':'Pairs in corpus'}</td>
+          <td>${total.toLocaleString()}</td></tr>
+    </tbody></table>`;
+  }
+
+  return h;
+}
+
+/* ── Corpus tab — full book list ── */
+function renderCorpus(facets, ar) {
+  const countMap = {};
+  facets.forEach(f => countMap[f.value] = f.count);
+  const maxC = Math.max(...Object.values(countMap), 1);
+
+  let h = `<div class="an-sec">${ar?'قائمةُ الكتب':'All texts in the corpus'}</div>`;
+  h += `<table class="an-table"><thead><tr>
+    <th>${ar?'الكتاب':'Title'}</th>
+    <th>${ar?'المؤلف':'Author'}</th>
+    <th>${ar?'الوفاة':'Death'}</th>
+    <th>${ar?'الباب':'Genre'}</th>
+    <th class="td-r">${ar?'الأزواج':'Pairs'}</th>
+    <th class="bar-cell"></th>
+  </tr></thead><tbody>`;
+
+  BOOKS_META.filter(b=>b.death_ah<9000).forEach(b => {
+    const count = countMap[b.key] || 0;
+    const bw = Math.round((count/maxC)*80);
+    h += `<tr>
+      <td class="${ar?'td-ar-w':''}" style="font-size:${ar?'14px':'12px'}">${ar?b.title_ar:b.title_en}</td>
+      <td style="font-size:11px;color:var(--ink-soft)">${b.author_en}</td>
+      <td style="font-size:11px;color:var(--ink-faint)">${b.death_ah} AH</td>
+      <td style="font-size:11px"><span style="color:${GENRE_COLORS[b.genre_en]||'var(--ink-soft)'}">${ar?b.genre_ar:b.genre_en}</span></td>
+      <td class="td-r">${count.toLocaleString()}</td>
+      <td class="bar-cell"><span class="bar" style="width:${bw}px"></span></td>
+    </tr>`;
+  });
+
+  // Unknown date last
+  BOOKS_META.filter(b=>b.death_ah>=9000).forEach(b => {
+    const count = countMap[b.key] || 0;
+    h += `<tr>
+      <td class="${ar?'td-ar-w':''}" style="font-size:${ar?'14px':'12px'}">${ar?b.title_ar:b.title_en}</td>
+      <td style="font-size:11px;color:var(--ink-soft)">${b.author_en}</td>
+      <td style="font-size:11px;color:var(--ink-faint)">${ar?'مجهول':'Unknown'}</td>
+      <td style="font-size:11px">${ar?b.genre_ar:b.genre_en}</td>
+      <td class="td-r">${count.toLocaleString()}</td>
+      <td class="bar-cell"><span class="bar" style="width:${Math.round((count/maxC)*80)}px"></span></td>
+    </tr>`;
+  });
+
+  h += `</tbody></table>`;
+
+  // Genre key
+  h += `<div class="an-sec">${ar?'مفتاحُ الأبواب':'Genre key'}</div>`;
+  h += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem">`;
+  Object.entries(GENRE_COLORS).forEach(([g,c]) => {
+    const arG = BOOKS_META.find(b=>b.genre_en===g)?.genre_ar||g;
+    h += `<span style="font-size:11px;display:flex;align-items:center;gap:4px">
+      <span style="width:10px;height:10px;border-radius:2px;background:${c};display:inline-block"></span>
+      ${ar?arG:g}
+    </span>`;
+  });
+  h += `</div>`;
+  return h;
+}
+
+/* ── Chronology tab ── */
+function renderChrono(facets, ar) {
+  const countMap = {};
+  facets.forEach(f => countMap[f.value] = f.count);
+
+  let h = `<div class="an-sec">${ar?'التسلسلُ الزمني للخزانة':'Timeline of the corpus'}</div>`;
+  h += `<p class="an-note">${ar
+    ? 'مرتَّبةٌ على سنة وفاة المؤلف بالتقويم الهجري. والرصائف تمتد من القرن الثاني إلى الثامن.'
+    : 'Ordered by the author\'s year of death (AH). The corpus spans the 2nd–8th centuries of the Islamic calendar.'
+  }</p>`;
+
+  // Century grouping
+  const centuries = {};
+  BOOKS_META.filter(b=>b.death_ah<9000).forEach(b => {
+    const cent = Math.ceil(b.death_ah/100);
+    if (!centuries[cent]) centuries[cent] = [];
+    centuries[cent].push(b);
+  });
+
+  Object.keys(centuries).sort((a,b)=>a-b).forEach(cent => {
+    const label = ar ? `القرنُ ${toArabicOrdinal(parseInt(cent))} الهجري` : `${ordinal(parseInt(cent))} century AH`;
+    const range = `${(cent-1)*100+1}–${cent*100} AH`;
+    h += `<div style="margin-bottom:1.5rem">
+      <div style="font-size:11px;font-weight:bold;color:var(--gold);margin-bottom:6px;letter-spacing:.04em">${label} <span style="color:var(--ink-faint);font-weight:normal">(${range})</span></div>`;
+
+    centuries[cent].sort((a,b)=>a.death_ah-b.death_ah).forEach(b => {
+      const count = countMap[b.key] || 0;
+      const barW  = Math.min(Math.round((count/16000)*200), 200);
+      h += `<div style="display:grid;grid-template-columns:180px 60px 1fr;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--rule)">
+        <div style="font-size:${ar?'14px':'11px'};${ar?'font-family:var(--arabic);direction:rtl':''}">
+          ${ar?b.title_ar:b.title_en}
+          <span style="font-size:10px;color:var(--ink-faint);display:block">${b.author_en}</span>
+        </div>
+        <div style="font-size:10px;color:var(--ink-faint);text-align:right">${b.death_ah} AH</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="bar" style="width:${barW}px;background:${GENRE_COLORS[b.genre_en]||'var(--ink-mid)'}"></span>
+          <span style="font-size:10px;color:var(--ink-faint)">${count.toLocaleString()}</span>
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  });
+
+  return h;
+}
+
+/* ── Download tab ── */
+function renderDownload(ar) {
+  let h = `<div class="an-sec">${ar?'تنزيلُ الخزانة':'Download the corpus'}</div>`;
+  h += `<p class="an-note">${ar
+    ? 'يُتاح كلُّ كتاب على حدة بصيغة CSV. العمود الأول: المتتالي، الثاني: الإنجليزي، الثالث: العربي.'
+    : 'Each text is available as a UTF-8 CSV file with three columns: sequence ID, English, Arabic.'
+  }</p>`;
+
+  h += `<table class="an-table"><thead><tr>
+    <th>${ar?'الكتاب':'Title'}</th>
+    <th>${ar?'المؤلف':'Author'}</th>
+    <th class="td-r">${ar?'الأزواج':'Pairs'}</th>
+  </tr></thead><tbody>`;
+
+  // Note: in a real deployment these would be actual download links
+  BOOKS_META.forEach(b => {
+    const fname = b.key.replace(/ - /g,'_').replace(/[^a-zA-Z0-9_]/g,'_') + '.csv';
+    h += `<tr>
+      <td class="${ar?'td-ar-w':''}" style="font-size:${ar?'14px':'12px'}">
+        <a href="#" style="color:var(--gold);text-decoration:none" title="Coming soon">${ar?b.title_ar:b.title_en}</a>
+      </td>
+      <td style="font-size:11px;color:var(--ink-soft)">${b.author_en}</td>
+      <td class="td-r">—</td>
+    </tr>`;
+  });
+
+  h += `</tbody></table>`;
+  h += `<p class="an-note" style="margin-top:1rem">${ar
+    ? 'لتنزيل الخزانة كاملةً أو الاستفسار عن الترخيص، تواصل مع صاحب الخزانة عبر صفحة الاستشهاد.'
+    : 'For bulk download or licensing enquiries, contact the curator via the Cite page.'
+  }</p>`;
+  return h;
+}
+
+/* ── Helpers ── */
+function esc(t) { return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function ordinal(n) { return n+(n===1?'st':n===2?'nd':n===3?'rd':'th'); }
+function toArabicOrdinal(n) {
+  const ord = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر'];
+  return ord[n] || n;
+}
+
+init();
+</script>
+</body>
+</html>
