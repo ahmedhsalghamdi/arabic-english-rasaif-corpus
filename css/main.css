@@ -249,7 +249,7 @@ body.rtl .copy-btn{font-family:var(--arabic);font-size:13px}
 
 
 
-/* â”€â”€ NEW ADDITIONS for v4 â”€â”€ */
+/* ── NEW ADDITIONS for v4 ── */
 
 /* Sidebar date line */
 .text-item-date {
@@ -271,9 +271,7 @@ body.rtl .text-item-date {
   font-size: 14px;
   direction: rtl;
 }
-.text-item-author.ar {
-  font-size: 11px;
-}
+.text-item-author.ar { font-size: 11px; }
 
 /* Source cell title */
 .src-title {
@@ -290,7 +288,46 @@ body.rtl .text-item-date {
   text-align: right;
 }
 
-/* Pagination */
+/* ── RTL table column order ── */
+/* In RTL mode, flip the table so Arabic is on the left (visually right) */
+body.rtl .ptable { direction: rtl; }
+body.rtl .ptable thead th { text-align: right; }
+body.rtl .td-en { direction: ltr; text-align: left; }
+body.rtl .td-ar { direction: rtl; text-align: right; }
+body.rtl .td-n  { direction: ltr; }
+body.rtl .td-src { text-align: right; }
+
+/* ── Expandable rows ── */
+.cell-text {
+  line-height: 1.7;
+  word-break: break-word;
+}
+.cell-text.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: calc(1.7em * 3);
+}
+.cell-text.collapsed.ar {
+  -webkit-line-clamp: 2;
+  max-height: calc(2.1em * 2);
+}
+.result-row {
+  cursor: pointer;
+  transition: background .12s;
+}
+.result-row:hover {
+  background: var(--gold-pale) !important;
+}
+.result-row.expanded {
+  background: var(--paper-2);
+}
+.result-row.expanded td {
+  border-bottom: 2px solid var(--rule-strong);
+}
+
+/* ── Pagination ── */
 .pagination {
   border-top: 1px solid var(--rule);
   padding: 12px 16px;
@@ -315,27 +352,11 @@ body.rtl .text-item-date {
   min-width: 32px;
   text-align: center;
 }
-body.rtl .pag-btn {
-  font-family: var(--arabic);
-  font-size: 13px;
-}
-.pag-btn:hover:not(:disabled):not(.active) {
-  background: var(--paper-3);
-}
-.pag-btn.active {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
-.pag-btn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-.pag-ellipsis {
-  color: var(--ink-faint);
-  padding: 0 3px;
-  font-size: 12px;
-}
+body.rtl .pag-btn { font-family: var(--arabic); font-size: 13px; }
+.pag-btn:hover:not(:disabled):not(.active) { background: var(--paper-3); }
+.pag-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.pag-btn:disabled { opacity: 0.35; cursor: default; }
+.pag-ellipsis { color: var(--ink-faint); padding: 0 3px; font-size: 12px; }
 .pag-info {
   font-size: 11px;
   color: var(--ink-faint);
@@ -349,5 +370,22 @@ body.rtl .pag-info {
   margin-right: 8px;
 }
 
-/* Remove rel-bar column (cleaner look) */
+/* Remove rel-bar column */
 .td-rel { display: none; }
+
+/* ── "تتمّته" expand hint ── */
+.cell-text.collapsed::after {
+  content: ' … تتمّته';
+  font-family: var(--arabic);
+  font-size: 11px;
+  color: var(--gold);
+  font-style: normal;
+  white-space: nowrap;
+}
+/* English collapsed hint */
+.cell-text.collapsed:not(.ar)::after {
+  content: ' …';
+  font-family: var(--serif);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
