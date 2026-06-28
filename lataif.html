@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>لطائف الرصائف</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=Scheherazade+New:wght@400;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<style>
+/* ── Page layout ── */
+.lataif-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 22px 80px;
+}
+
+/* ── Page title ── */
+.lataif-title {
+  font-family: var(--arabic);
+  font-size: 2rem;
+  font-weight: normal;
+  color: var(--ink);
+  margin-bottom: .3rem;
+  letter-spacing: 0;
+}
+.lataif-subtitle {
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: .06em;
+  margin-bottom: 2rem;
+  font-family: var(--serif);
+}
+.lataif-ornament {
+  text-align: center;
+  color: var(--gold-light);
+  font-size: 1rem;
+  letter-spacing: .4em;
+  margin: 1.5rem 0;
+}
+
+/* ── Post list ── */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.post-card {
+  border-bottom: 1px solid var(--rule);
+  padding: 18px 0;
+  cursor: pointer;
+  transition: background .1s;
+}
+.post-card:first-child { border-top: 1px solid var(--rule); }
+.post-card:hover { background: var(--gold-pale); padding-right: 8px; padding-left: 8px; margin: 0 -8px; }
+.post-date {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  margin-bottom: 4px;
+  direction: ltr;
+  text-align: right;
+}
+.post-title {
+  font-family: var(--arabic);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+.post-excerpt {
+  font-family: var(--arabic);
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Single post view ── */
+.post-full { display: none; }
+.post-full.active { display: block; }
+.post-list.hidden { display: none; }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--arabic);
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+.back-btn:hover { color: var(--gold); }
+
+.post-full-title {
+  font-family: var(--arabic);
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: var(--ink);
+  margin-bottom: .4rem;
+  line-height: 1.5;
+}
+.post-full-date {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  margin-bottom: 1.5rem;
+  direction: ltr;
+  display: block;
+}
+.post-full-body {
+  font-family: var(--arabic);
+  font-size: 17px;
+  line-height: 2.1;
+  color: var(--ink-mid);
+}
+.post-full-body p { margin-bottom: .85rem; }
+.post-full-body h2 {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--ink-mid);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 3px;
+  margin: 1.5rem 0 .7rem;
+}
+.post-full-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 14px;
+}
+.post-full-body table th {
+  background: var(--paper-2);
+  border-bottom: 2px solid var(--rule-strong);
+  padding: 6px 10px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--ink-soft);
+}
+.post-full-body table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.post-full-body table tr:hover td { background: var(--gold-pale); }
+
+/* ── Embedded corpus pair ── */
+.corpus-pair {
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--rm);
+  background: var(--paper-2);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+.corpus-pair-en {
+  padding: 10px 14px;
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--ink-mid);
+  border-bottom: 1px solid var(--rule);
+  direction: ltr;
+  text-align: left;
+  line-height: 1.7;
+}
+.corpus-pair-ar {
+  padding: 10px 14px;
+  font-family: var(--arabic);
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 2;
+}
+.corpus-pair-src {
+  padding: 4px 14px;
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  background: var(--paper-3);
+  direction: ltr;
+  text-align: left;
+}
+
+/* ── Empty state ── */
+.lataif-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-faint);
+  font-family: var(--arabic);
+  font-size: 16px;
+  line-height: 2;
+}
+
+/* ── Loading ── */
+.lataif-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink-faint);
+  font-family: var(--arabic);
+  font-size: 14px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 700px) {
+  .lataif-wrap { padding: 20px 14px 60px; }
+  .lataif-title { font-size: 1.5rem; }
+  .post-full-body { font-size: 15px; }
+}
+</style>
+</head>
+<body class="rtl">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="index.html">
+      <span class="site-name">الرَّصائف</span>
+      <span class="site-tagline">خزانةُ تراجمِ الإنجليز لكتب العرب</span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html"     class="nav-link">التفتيش</a>
+      <a href="analysis.html"  class="nav-link">وجوهُ الإحصاء</a>
+      <a href="lataif.html"    class="nav-link active">لطائف الرصائف</a>
+      <a href="about.html"     class="nav-link">خبرُ الرصائف</a>
+      <a href="cite.html"      class="nav-link">الاستشهادُ والعزو</a>
+      <a href="aranjiyya.html" class="nav-link">العَرَنجِيَّة</a>
+      <button class="nav-lang-btn" onclick="window.location='index.html'">English</button>
+    </nav>
+  </div>
+</header>
+
+<div class="lataif-wrap">
+
+  <h1 class="lataif-title">لطائف الرصائف</h1>
+  <div class="lataif-subtitle">Subtle rarities from the parallel corpus · by Ahmed H. S. Al-Ghamdi</div>
+  <div class="lataif-ornament">· · · ✦ · · ·</div>
+
+  <!-- Post list -->
+  <div class="post-list" id="post-list">
+    <div class="lataif-loading"><span class="spinner"></span> ريثما تُجلى…</div>
+  </div>
+
+  <!-- Single post view -->
+  <div class="post-full" id="post-full">
+    <button class="back-btn" onclick="showList()">← العودة إلى اللطائف</button>
+    <h1 class="post-full-title" id="pf-title"></h1>
+    <span class="post-full-date" id="pf-date"></span>
+    <div class="post-full-body" id="pf-body"></div>
+  </div>
+
+</div>
+
+<script src="js/i18n.js"></script>
+<script>
+const STORAGE_KEY = 'rasaif_lataif';
+
+/* ── Load posts from Cloudflare KV via Worker ── */
+async function loadPosts() {
+  try {
+    const r = await fetch('https://rasaif-search.ahmed-hs-alghamdi.workers.dev/lataif');
+    if (!r.ok) throw new Error('Could not load');
+    const data = await r.json();
+    return data.posts || [];
+  } catch(e) {
+    // Fallback to localStorage for development
+    try {
+      const local = localStorage.getItem(STORAGE_KEY);
+      return local ? JSON.parse(local) : [];
+    } catch { return []; }
+  }
+}
+
+/* ── Render post list ── */
+function renderList(posts) {
+  const el = document.getElementById('post-list');
+  if (!posts.length) {
+    el.innerHTML = `<div class="lataif-empty">
+      لا لطائف بعد.<br>
+      <small style="font-size:12px;color:var(--ink-faint)">ستظهر هنا حين تُكتب.</small>
+    </div>`;
+    return;
+  }
+  el.innerHTML = posts
+    .sort((a,b) => new Date(b.date) - new Date(a.date))
+    .map((p,i) => `
+      <div class="post-card" onclick="showPost(${i})">
+        <div class="post-date">${formatDate(p.date)}</div>
+        <div class="post-title">${esc(p.title)}</div>
+        <div class="post-excerpt">${stripHTML(p.body).slice(0,200)}</div>
+      </div>
+    `).join('');
+}
+
+/* ── Show single post ── */
+let currentPosts = [];
+function showPost(i) {
+  const p = currentPosts[i];
+  if (!p) return;
+  document.getElementById('pf-title').textContent = p.title;
+  document.getElementById('pf-date').textContent  = formatDate(p.date);
+  document.getElementById('pf-body').innerHTML    = renderBody(p.body);
+  document.getElementById('post-list').classList.add('hidden');
+  document.getElementById('post-full').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Update URL hash
+  history.pushState({postIndex: i}, '', `#latifa-${i+1}`);
+}
+
+function showList() {
+  document.getElementById('post-list').classList.remove('hidden');
+  document.getElementById('post-full').classList.remove('active');
+  history.pushState({}, '', '#');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Render post body — supports basic markdown + corpus pairs ── */
+function renderBody(body) {
+  if (!body) return '';
+  let html = esc(body);
+
+  // Corpus pair: [[EN text || AR text || Source]]
+  html = html.replace(/\[\[(.+?)\|\|(.+?)\|\|(.+?)\]\]/g, (_, en, ar, src) => `
+    <div class="corpus-pair">
+      <div class="corpus-pair-en">${en.trim()}</div>
+      <div class="corpus-pair-ar">${ar.trim()}</div>
+      <div class="corpus-pair-src">${src.trim()}</div>
+    </div>
+  `);
+
+  // Tables: | col | col | (markdown style)
+  html = html.replace(/(\|.+\|\n?)+/g, block => {
+    const rows = block.trim().split('\n').filter(r => r.trim());
+    let table = '<table>';
+    rows.forEach((row, i) => {
+      if (row.match(/^\|[-\s|]+\|$/)) return; // separator row
+      const cells = row.split('|').slice(1,-1).map(c => c.trim());
+      if (i === 0) {
+        table += '<tr>' + cells.map(c => `<th>${c}</th>`).join('') + '</tr>';
+      } else {
+        table += '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+      }
+    });
+    return table + '</table>';
+  });
+
+  // Headings: ## heading
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+
+  // Bold: **text**
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Italic: *text*
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Paragraphs
+  html = html.split(/\n\n+/).map(p => p.trim() ? `<p>${p.replace(/\n/g,' ')}</p>` : '').join('');
+
+  return html;
+}
+
+/* ── Helpers ── */
+function esc(t) {
+  return String(t||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+function stripHTML(h) { return String(h||'').replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'); }
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('ar-SA-u-ca-islamic', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+
+/* ── Init ── */
+async function init() {
+  const posts = await loadPosts();
+  currentPosts = posts.sort((a,b) => new Date(b.date) - new Date(a.date));
+  renderList(currentPosts);
+
+  // Handle direct link to a post
+  const hash = window.location.hash;
+  if (hash.startsWith('#latifa-')) {
+    const i = parseInt(hash.replace('#latifa-','')) - 1;
+    if (currentPosts[i]) showPost(i);
+  }
+}
+
+window.addEventListener('popstate', e => {
+  if (!window.location.hash || window.location.hash === '#') showList();
+});
+
+init();
+</script>
+</body>
+</html>
