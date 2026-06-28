@@ -246,3 +246,108 @@ body.rtl .copy-btn{font-family:var(--arabic);font-size:13px}
   .td-ar{display:none}
   .banner-inner{gap:.75rem}
 }
+
+
+
+/* â”€â”€ NEW ADDITIONS for v4 â”€â”€ */
+
+/* Sidebar date line */
+.text-item-date {
+  font-size: 10px;
+  color: var(--ink-faint);
+  font-style: italic;
+  line-height: 1.4;
+}
+body.rtl .text-item-date {
+  font-family: var(--arabic);
+  font-size: 11px;
+  font-style: normal;
+}
+
+/* Sidebar title/author in Arabic */
+.text-item-title.ar,
+.text-item-author.ar {
+  font-family: var(--arabic);
+  font-size: 14px;
+  direction: rtl;
+}
+.text-item-author.ar {
+  font-size: 11px;
+}
+
+/* Source cell title */
+.src-title {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  white-space: normal;
+  max-width: 90px;
+}
+.src-title.ar {
+  font-family: var(--arabic);
+  font-size: 12px;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Pagination */
+.pagination {
+  border-top: 1px solid var(--rule);
+  padding: 12px 16px;
+  background: var(--paper-2);
+}
+.pag-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.pag-btn {
+  font-family: var(--serif);
+  font-size: 12px;
+  padding: 3px 9px;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper);
+  color: var(--ink-mid);
+  cursor: pointer;
+  border-radius: var(--r);
+  transition: background .1s;
+  min-width: 32px;
+  text-align: center;
+}
+body.rtl .pag-btn {
+  font-family: var(--arabic);
+  font-size: 13px;
+}
+.pag-btn:hover:not(:disabled):not(.active) {
+  background: var(--paper-3);
+}
+.pag-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.pag-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pag-ellipsis {
+  color: var(--ink-faint);
+  padding: 0 3px;
+  font-size: 12px;
+}
+.pag-info {
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-left: 8px;
+  font-family: var(--mono);
+}
+body.rtl .pag-info {
+  font-family: var(--arabic);
+  font-size: 12px;
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+/* Remove rel-bar column (cleaner look) */
+.td-rel { display: none; }
