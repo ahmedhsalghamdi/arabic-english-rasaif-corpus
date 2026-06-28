@@ -182,9 +182,9 @@ function setView(v){ view=v; document.querySelectorAll('#view-btns button').forE
 function setMode(m){ mode=m; document.querySelectorAll('#mode-btns button').forEach((b,i)=>b.classList.toggle('active',['any','exact','or'][i]===m)); RasaifEngine.rebuild(document.getElementById('morpho').checked); doSearch(); }
 
 let searchTimer=null;
-function doSearch(){ clearTimeout(searchTimer); searchTimer=setTimeout(_search,120); }
+function doSearch(){ clearTimeout(searchTimer); searchTimer=setTimeout(()=>_search(),120); }
 
-function _search(){
+async function _search(){
   const q=(document.getElementById('q').value||'').trim();
   const excl=document.getElementById('excl').value||'';
   const lang=document.getElementById('lang-sel').value;
@@ -196,8 +196,17 @@ function _search(){
     document.getElementById('results').innerHTML=`<div class="msg">${t('no_texts')}</div>`;
     return;
   }
-  RasaifEngine.rebuild(useMorpho);
-  const {hits,total}=RasaifEngine.search({query:q,lang,mode,useMorpho,exclude:excl});
+  if (!q){
+    document.getElementById('stats-bar').textContent=t('ready_msg');
+    document.getElementById('results').innerHTML=`<div class="msg">${t('no_results')}<br><small>${t('no_results_hint')}</small></div>`;
+    return;
+  }
+  document.getElementById('results').innerHTML=`<div class="msg"><span class="spinner"></span> ${t('loading')}</div>`;
+  const {hits,total,error}=await RasaifEngine.search({query:q,lang,mode,useMorpho,exclude:excl});
+  if (error){
+    document.getElementById('results').innerHTML=`<div class="msg">${error}</div>`;
+    return;
+  }
   const maxScore=hits.length?Math.max(hits[0].score,0.01):0.01;
   const active=books.filter(b=>b.checked).length;
   let sb=`${hits.length} ${LANG==='ar'?'من':'of'} ${total} ${LANG==='ar'?'زوج':'pairs'}`;
@@ -205,13 +214,14 @@ function _search(){
   if(q&&hits.length) sb+=`  ·  ${t('ranked')}`;
   sb+=`  ·  ${active} ${LANG==='ar'?'نصٍّ نشطٍ':'text(s) active'}`;
   document.getElementById('stats-bar').textContent=sb;
-  if (!hits.length){ document.getElementById('results').innerHTML=`<div class="msg">${t('no_results')}<br><small>${t('no_results_hint')}</small></div>`; return; }
+  if (!hits.length){
+    document.getElementById('results').innerHTML=`<div class="msg">${t('no_results')}<br><small>${t('no_results_hint')}</small></div>`;
+    return;
+  }
   const el=document.getElementById('results');
   if (view==='parallel') el.innerHTML=renderParallel(hits,lang,maxScore,q);
   else { const lines=RasaifEngine.makeConcordance(hits,q,lang); el.innerHTML=renderKWIC(lines); }
 }
-
-function renderParallel(hits,lang,maxScore,q){
   const showAr=lang!=='en', showEn=lang!=='ar';
   let h=`<table class="ptable"><thead><tr>
     <th>#</th><th>${t('col_rel')}</th><th>${t('col_source')}</th>
