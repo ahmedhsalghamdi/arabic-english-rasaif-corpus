@@ -11,6 +11,7 @@ const UI = {
     nav_analysis:     'Analysis',
     nav_about:        'About',
     nav_cite:         'Cite',
+    nav_lataif:       'Lāṭāʾif al-Raṣāʾif',
     nav_aranjiyya:    'al-ʿAranijiyya',
     toggle_lang:      'العربية',
 
@@ -64,6 +65,7 @@ const UI = {
     nav_analysis:     'وجوهُ الإحصاء',
     nav_about:        'خبرُ الرصائف',
     nav_cite:         'الاستشهادُ والعزو',
+    nav_lataif:       'لطائف الرصائف',
     nav_aranjiyya:    'العَرَنجِيَّة',
     toggle_lang:      'English',
 
@@ -89,7 +91,7 @@ const UI = {
     excl_placeholder: 'لفظٌ تريد إقصاءه…',
 
     ready_msg:        'الخزانةُ حاضرة، فسَل تُجَب.',
-    loading:          'ريثما تُجلى…',
+    loading:          'أمهلنا…',
     search_prompt:    'ضَع في المربَّع ما تبتغي من لفظٍ أو عبارة.',
     no_results:       'لم يُسعفنا البحثُ بطائل.',
     no_results_hint:  'جرِّب «الألفاظُ بأيّ ترتيب» أو التفتيشَ بالاشتقاق.',
